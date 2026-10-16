@@ -1,0 +1,7 @@
+# 项目本地数据（非游戏资源，不入库）
+.workbuddy/
+
+# 系统垃圾文件
+.DS_Store
+Thumbs.db
+desktop.ini

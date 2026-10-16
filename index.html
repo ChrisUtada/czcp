@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>马江海战殉国舰队调查案卷 · 其一 [老掌柜]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;600;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0a0a0a;--bg2:#111111;--bg3:#181818;
+    --line:#2a2a2a;--line2:#3a3a3a;--line3:#555555;
+    --fg:#eaeaea;--fg2:#aaaaaa;--fg3:#666666;--fg4:#3a3a3a;
+    --white:#ffffff;--card-bg:#0f0f0f;
+    --paper:#e8dcc0;--paper2:#d8cba8;--paper-ink:#2b2620;
+    --seal:#8a2b25;--seal2:#a1362e;
+    --note-bg:#f0e6d0;
+  }
+  html,body{height:100%}
+  body{
+    font-family:'Noto Sans SC',sans-serif;
+    background:var(--bg);color:var(--fg);
+    overflow:hidden;display:flex;flex-direction:column;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'Space Mono','Courier Prime',monospace}
+  .serif{font-family:'Noto Serif SC','Songti SC',serif}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  button:focus{outline:none}
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:#0a0a0a}
+  ::-webkit-scrollbar-thumb{background:#333;border-radius:0}
+  ::-webkit-scrollbar-thumb:hover{background:#666}
+
+  /* ========== 顶栏 ========== */
+  .topbar{
+    height:58px;flex-shrink:0;
+    border-bottom:2px solid var(--line);
+    background:#050505;display:flex;align-items:center;
+    padding:0 20px;position:relative;z-index:30;gap:20px;
+  }
+  .zoom-group{display:flex;align-items:center;gap:8px}
+  .zoom-btns{
+    display:flex;border:1.5px solid var(--line3);border-radius:3px;
+    overflow:hidden;background:var(--bg2);
+  }
+  .zoom-btns button{
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    font-size:17px;font-weight:700;color:var(--fg2);transition:.15s;
+  }
+  .zoom-btns button:first-child{border-right:1.5px solid var(--line3)}
+  .zoom-btns button:hover{background:#2a2a2a;color:var(--white)}
+  .zoom-val{font-family:'Space Mono',monospace;font-size:11px;color:var(--fg3);min-width:42px}
+
+  .title-banner{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:var(--white);color:#000;padding:6px 22px;border-radius:2px;
+    border:2px solid var(--white);box-shadow:4px 4px 0 0 rgba(255,255,255,.15);
+    font-weight:900;letter-spacing:.06em;font-size:14.5px;
+    display:flex;align-items:center;gap:12px;white-space:nowrap;
+  }
+  .title-banner::before,.title-banner::after{
+    content:'';width:7px;height:7px;border-radius:50%;background:#000;
+  }
+  @media(max-width:900px){
+    .title-banner{font-size:11.5px;padding:5px 12px}
+    .title-banner::before,.title-banner::after{display:none}
+  }
+
+  .topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .audio-btn{
+    padding:6px 11px;border:1.5px solid var(--line3);border-radius:3px;
+    background:var(--bg2);font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--fg2);letter-spacing:.05em;display:flex;align-items:center;gap:7px;
+    transition:.15s;
+  }
+  .audio-btn:hover{background:#222;color:var(--white)}
+  .sys-meta{
+    font-family:'Space Mono',monospace;font-size:10px;color:var(--fg3);
+    text-align:right;line-height:1.5;
+  }
+  .sys-meta b{color:var(--fg2);font-weight:700}
+  @media(max-width:720px){.sys-meta{display:none}}
+
+  /* ========== 主体 ========== */
+  .workspace{flex:1;display:flex;overflow:hidden;position:relative}
+
+  /* ---- 左侧：卷宗列表 ---- */
+  .archive-list{
+    width:220px;flex-shrink:0;
+    background:#050505;border-right:2px solid var(--line);
+    padding:14px 12px;overflow-y:auto;z-index:20;
+  }
+  .archive-list h2{
+    font-family:'Space Mono',monospace;font-size:10.5px;
+    color:var(--fg3);letter-spacing:.15em;margin-bottom:10px;
+    padding-bottom:8px;border-bottom:1px solid var(--line);
+  }
+  .arch-item{
+    padding:10px 10px;border-left:2px solid var(--line);
+    margin-bottom:7px;cursor:pointer;transition:.18s;line-height:1.5;
+  }
+  .arch-item:hover{background:var(--bg3);border-left-color:var(--white)}
+  .arch-item.done{border-left-color:var(--seal)}
+  .arch-item .ai-title{font-size:12.5px;color:#c9bda3;margin-bottom:3px;font-weight:600}
+  .arch-item .ai-date{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4)}
+  .arch-item.done .ai-title{color:var(--fg3)}
+  .arch-item.done .ai-title::after{content:' ✓';color:var(--seal);font-size:10px}
+  @media(max-width:900px){.archive-list{display:none}}
+
+  /* ---- 中间：画布 ---- */
+  .viewport{
+    flex:1;overflow:auto;position:relative;background-color:#080808;
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:32px 32px;
+  }
+  .canvas{
+    position:relative;width:1400px;height:900px;
+    transform-origin:0 0;transition:transform .15s ease-out;
+  }
+  .svg-lines{
+    position:absolute;inset:0;width:1400px;height:900px;
+    pointer-events:none;z-index:5;overflow:visible;
+  }
+  .svg-lines line{
+    stroke:#666;stroke-width:1.5;stroke-dasharray:5 5;
+    transition:stroke .4s,stroke-dasharray .4s,filter .4s;
+  }
+  .svg-lines line.active{
+    stroke:var(--white);stroke-dasharray:none;stroke-width:2;
+    filter:drop-shadow(0 0 6px rgba(255,255,255,.5));
+  }
+  .svg-lines circle{fill:#888;transition:fill .4s}
+  .svg-lines circle.active{fill:var(--white)}
+
+  /* ---- 卡片 ---- */
+  .card{
+    position:absolute;background:var(--card-bg);
+    border:2px solid var(--line2);border-radius:4px;z-index:10;
+    transition:border-color .25s,box-shadow .25s,transform .2s;
+    box-shadow:4px 4px 0 0 rgba(255,255,255,.06);
+  }
+  .card:hover{border-color:#666;box-shadow:4px 4px 0 0 rgba(255,255,255,.12)}
+  .card.target{
+    width:400px;left:500px;top:70px;
+    border:2px solid var(--white);
+    box-shadow:6px 6px 0 0 rgba(255,255,255,.9);background:#0f0f0f;
+  }
+  .card.target:hover{border-color:var(--white);box-shadow:6px 6px 0 0 rgba(255,255,255,.9)}
+  .card-header{
+    padding:5px 10px;font-size:11px;font-weight:900;
+    letter-spacing:.1em;display:flex;align-items:center;justify-content:space-between;
+  }
+  .card.target .card-header{background:var(--white);color:#000}
+  .card.person .card-header{
+    background:#222;color:#bbb;border-bottom:1px solid var(--line);
+  }
+  .tag{
+    font-family:'Space Mono',monospace;font-size:10px;
+    font-weight:700;padding:2px 6px;border-radius:2px;
+  }
+  .card.target .tag{background:#000;color:#fff}
+  .card.person .tag{background:#000;color:#888;border:1px solid #444}
+  .card.person{width:340px;top:490px}
+  .card.person.c1{left:60px}
+  .card.person.c2{left:530px}
+  .card.person.c3{left:1000px}
+  .card-body{padding:14px}
+  .card.target .card-body{padding:16px}
+  .target-layout{display:flex;gap:16px}
+  .target-photo{
+    width:90px;height:110px;background:#000;border:1px solid var(--line2);
+    border-radius:3px;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;color:#555;flex-shrink:0;
+  }
+  .target-photo .q{font-size:38px;font-weight:900;line-height:1}
+  .target-photo .lbl{font-family:'Space Mono',monospace;font-size:9px;color:#444;margin-top:6px}
+  .target-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+  .field-label{
+    font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg3);
+    letter-spacing:.08em;margin-bottom:4px;display:flex;justify-content:space-between;
+  }
+  .codename{font-size:20px;font-weight:900;color:var(--white);letter-spacing:.1em}
+
+  .slot{
+    width:100%;text-align:left;background:#1a1a1a;
+    border:1.5px solid var(--line2);border-radius:3px;
+    padding:7px 9px;font-size:12px;font-weight:700;color:#888;
+    transition:.15s;display:flex;align-items:center;justify-content:space-between;
+    gap:8px;min-height:34px;
+  }
+  .slot .slot-text{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;
+  }
+  .slot .slot-icon{font-family:'Space Mono',monospace;font-size:11px;color:var(--fg4);flex-shrink:0}
+  .slot:hover{background:#252525;border-color:var(--white);color:var(--fg2)}
+  .slot:hover .slot-icon{color:var(--white)}
+  .slot.filled{background:#151515;border-color:#555;color:var(--fg)}
+  .slot.filled .slot-icon{color:var(--white)}
+  .slot.filled:hover{border-color:var(--white);background:#1e1e1e}
+
+  .person-row{display:flex;gap:10px;margin-bottom:10px}
+  .person-photo{
+    width:62px;height:78px;background:#050505;border:1px solid var(--line2);
+    border-radius:3px;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-size:20px;color:#444;flex-shrink:0;
+  }
+  .person-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+
+  .card-footer{
+    border-top:1px solid var(--line);padding:8px 14px 10px;
+    font-family:'Space Mono',monospace;font-size:10.5px;color:var(--fg3);line-height:1.5;
+  }
+  .card-footer .label{color:var(--fg4);font-size:9.5px;letter-spacing:.1em;display:block;margin-bottom:2px}
+  .card.complete{border-color:#888;box-shadow:4px 4px 0 0 rgba(255,255,255,.25)}
+  .card.target.complete{border-color:var(--white);box-shadow:6px 6px 0 0 rgba(255,255,255,.9)}
+
+  /* ---- 右侧栏 ---- */
+  .sidebar{
+    width:340px;flex-shrink:0;background:#050505;
+    border-left:2px solid var(--line);padding:14px;
+    display:flex;flex-direction:column;gap:14px;overflow-y:auto;z-index:20;
+  }
+  @media(max-width:900px){.sidebar{display:none}}
+
+  .sidebar-card{
+    background:var(--white);color:#000;border-radius:3px;
+    padding:11px 13px;box-shadow:4px 4px 0 0 rgba(255,255,255,.25);
+  }
+  .sidebar-card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:7px;
+  }
+  .sidebar-card-head h3{font-size:12.5px;font-weight:900;letter-spacing:.08em}
+  .sidebar-card-head .tag{
+    background:#000;color:#fff;font-size:9px;padding:2px 6px;border-radius:2px;
+  }
+  .sidebar-card p{font-size:11px;line-height:1.55;color:#333;font-weight:500}
+
+  .section-title{
+    font-family:'Space Mono',monospace;font-size:10.5px;color:var(--fg3);
+    letter-spacing:.1em;display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .section-title .count{color:var(--white);font-weight:700}
+
+  /* 待办列表 */
+  .todo-list{display:flex;flex-direction:column;gap:5px}
+  .todo{
+    display:flex;align-items:center;gap:9px;
+    padding:7px 10px;background:var(--bg2);
+    border:1px solid var(--line);border-radius:3px;
+    font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--fg3);transition:.2s;line-height:1.4;
+  }
+  .todo .check{
+    width:15px;height:15px;border:1.5px solid var(--line3);border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:9.5px;font-weight:700;flex-shrink:0;transition:.2s;
+  }
+  .todo.done{color:var(--fg);border-color:#4a4a4a;background:#131313}
+  .todo.done .check{background:var(--white);color:#000;border-color:var(--white)}
+
+  /* 笔记本 */
+  .notebook{
+    background:#0c0c0c;border:1px solid var(--line);border-radius:3px;
+    padding:10px;min-height:140px;max-height:380px;overflow-y:auto;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .notebook .empty-hint{
+    font-size:11px;color:var(--fg4);font-style:italic;
+    padding:14px 6px;line-height:1.7;text-align:center;
+  }
+  .notebook .empty-hint .arrow{
+    display:block;font-size:20px;color:var(--seal);margin-bottom:6px;
+    animation:bounce 1.8s infinite;
+  }
+  @keyframes bounce{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-3px)}
+  }
+
+  /* 笔记纸张 */
+  .note{
+    background:var(--note-bg);color:var(--paper-ink);
+    padding:9px 11px;border-radius:2px;position:relative;
+    font-family:'Noto Serif SC','Songti SC',serif;
+    box-shadow:2px 2px 0 0 rgba(0,0,0,.35);
+    border-left:3px solid var(--seal);
+    transition:.18s;cursor:pointer;
+    animation:noteIn .35s ease-out;
+  }
+  .note:hover{transform:translateX(-2px);box-shadow:3px 3px 0 0 rgba(0,0,0,.5)}
+  .note.used{opacity:.35;cursor:default;filter:grayscale(.5)}
+  .note.used:hover{transform:none}
+  @keyframes noteIn{
+    from{opacity:0;transform:translateX(14px) rotate(1deg)}
+    to{opacity:1;transform:translateX(0) rotate(0)}
+  }
+  .note-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:5px;padding-bottom:4px;
+    border-bottom:1px dashed #b8a88a;
+  }
+  .note-source{
+    font-size:9.5px;color:#7a6a52;letter-spacing:.05em;
+    font-family:'Space Mono',monospace;
+  }
+  .note-time{
+    font-size:9px;color:#9a8a72;font-family:'Space Mono',monospace;
+  }
+  .note-text{
+    font-size:13px;font-weight:700;color:var(--seal);
+    line-height:1.6;letter-spacing:.02em;
+  }
+  .note-text .underline{
+    background-image:linear-gradient(to right, var(--seal), var(--seal));
+    background-size:100% 1.5px;background-position:0 100%;
+    background-repeat:no-repeat;padding-bottom:1px;
+  }
+  .note-hint{
+    font-size:9.5px;color:#9a8a72;margin-top:5px;
+    font-family:'Space Mono',monospace;letter-spacing:.03em;
+  }
+  .note.used .note-hint{color:#6b8a4a}
+  .note.used .note-hint::before{content:'✓ ';font-weight:700}
+
+  .archive-btn{
+    width:100%;padding:13px;background:var(--white);color:#000;
+    font-weight:900;font-size:13px;letter-spacing:.08em;
+    border-radius:3px;border:2px solid var(--white);
+    box-shadow:4px 4px 0 0 rgba(255,255,255,.3);
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    transition:.15s;margin-top:auto;
+  }
+  .archive-btn:hover{
+    background:#dcdcdc;transform:translate(-1px,-1px);
+    box-shadow:5px 5px 0 0 rgba(255,255,255,.35);
+  }
+  .archive-btn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 0 rgba(255,255,255,.3)}
+
+  /* ========== 底栏 ========== */
+  .bottombar{
+    height:54px;flex-shrink:0;border-top:2px solid var(--line);
+    background:#050505;display:flex;align-items:center;
+    padding:0 24px;gap:14px;z-index:30;
+  }
+  .circle-btn{
+    position:relative;width:36px;height:36px;border-radius:50%;
+    border:2px solid var(--line3);background:var(--bg2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;transition:.15s;color:var(--fg2);
+  }
+  .circle-btn:hover{border-color:var(--white);color:var(--white);background:#1c1c1c}
+  .circle-btn.primary{background:var(--white);color:#000;border-color:var(--white)}
+  .circle-btn.primary:hover{background:#dcdcdc}
+  .circle-btn .badge{
+    position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;
+    background:var(--white);color:#000;font-family:'Space Mono',monospace;
+    font-size:9px;font-weight:900;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    padding:0 4px;border:1.5px solid #000;
+  }
+  .bottombar-status{
+    margin-left:auto;font-family:'Space Mono',monospace;
+    font-size:10px;color:var(--fg3);letter-spacing:.08em;
+  }
+  @media(max-width:720px){.bottombar-status{display:none}}
+
+  /* ========== 弹窗 ========== */
+  .modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;
+    display:none;align-items:center;justify-content:center;
+    padding:24px;backdrop-filter:blur(4px);
+  }
+  .modal.on{display:flex}
+
+  /* 案卷弹窗（纸张风） */
+  .doc-modal-panel{
+    width:100%;max-width:820px;max-height:90vh;
+    display:flex;flex-direction:column;
+    animation:modalIn .22s ease-out;
+  }
+  @keyframes modalIn{
+    from{opacity:0;transform:translateY(12px) scale(.98)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+
+  .doc-paper{
+    flex:1;overflow-y:auto;
+    background:var(--paper);color:var(--paper-ink);
+    border-radius:4px;
+    padding:44px 52px;
+    box-shadow:0 24px 80px rgba(0,0,0,.85);
+    position:relative;
+    font-family:'Noto Serif SC','Songti SC','STSong',serif;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(180,150,100,.08) 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(140,100,60,.06) 0%, transparent 45%);
+  }
+  .doc-paper::before{
+    content:'';position:absolute;inset:14px;pointer-events:none;
+    border:1px solid rgba(138,43,37,.15);
+    border-radius:2px;
+  }
+
+  .doc-paper .doc-eyebrow{
+    font-family:'Space Mono',monospace;font-size:10.5px;
+    color:#8a7a5c;letter-spacing:.25em;
+    margin-bottom:8px;text-transform:uppercase;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .doc-paper .doc-eyebrow .seal-mark{
+    display:inline-block;padding:2px 8px;border:1.5px solid var(--seal);
+    color:var(--seal);font-size:9.5px;letter-spacing:.2em;
+    transform:rotate(-2deg);font-weight:700;font-family:'Noto Serif SC',serif;
+  }
+
+  .doc-paper .doc-title{
+    font-size:22px;font-weight:900;letter-spacing:.06em;
+    color:#1c1813;margin-bottom:6px;line-height:1.35;
+  }
+  .doc-paper .doc-date{
+    font-family:'Space Mono',monospace;font-size:11px;
+    color:#7a6a52;letter-spacing:.15em;
+    padding-bottom:18px;margin-bottom:22px;
+    border-bottom:1px double #c8bb9e;
+  }
+
+  .doc-paper .doc-body{font-size:15.5px;line-height:2.15;color:#2b2620}
+  .doc-paper .doc-body p{text-indent:2em;margin-bottom:14px}
+  .doc-paper .doc-body p.no-indent{text-indent:0}
+  .doc-paper .doc-body strong{color:#1c1813;font-weight:900}
+
+  /* ===== 划线关键词 ===== */
+  .keyword{
+    display:inline;
+    background:transparent;border:none;padding:1px 3px;margin:0 1px;
+    font-family:inherit;font-size:inherit;font-weight:700;
+    color:#2b2620;
+    cursor:pointer;
+    position:relative;
+    border-radius:2px;
+    transition:color .25s,background .25s;
+    border-bottom:1.5px dashed rgba(138,43,37,.45);
+    line-height:inherit;
+  }
+  .keyword:hover{
+    background:rgba(138,43,37,.08);
+    border-bottom-style:solid;
+    border-bottom-color:var(--seal);
+    color:var(--seal);
+  }
+
+  /* 划线标记态 */
+  .keyword.marked{
+    color:var(--seal);
+    border-bottom:none;
+    background:transparent;
+    cursor:default;
+  }
+  .keyword.marked::after{
+    content:'';
+    position:absolute;left:0;right:0;bottom:-1px;
+    height:2px;
+    background:var(--seal);
+    border-radius:2px;
+    transform-origin:left center;
+    animation:strokeIn .45s cubic-bezier(.2,.8,.3,1) forwards;
+    box-shadow:0 1px 0 rgba(138,43,37,.2);
+  }
+  .keyword.marked::before{
+    content:'✓';
+    position:absolute;top:-9px;right:-8px;
+    font-size:10px;color:var(--seal);font-weight:900;
+    font-family:'Space Mono',monospace;
+    animation:checkPop .3s ease-out;
+  }
+  @keyframes strokeIn{
+    from{transform:scaleX(0)}
+    to{transform:scaleX(1)}
+  }
+  @keyframes checkPop{
+    0%{opacity:0;transform:scale(.4)}
+    70%{opacity:1;transform:scale(1.25)}
+    100%{opacity:1;transform:scale(1)}
+  }
+  .keyword.marked:hover{background:transparent}
+
+  /* ===== 文本选区高亮 ===== */
+  ::selection{ background:rgba(138,43,37,.35); color:#fff; }
+  .doc-body ::selection{ background:rgba(202,162,58,.4); }
+
+  /* ===== 右键菜单 ===== */
+  .ctx-menu{
+    position:fixed;z-index:9999;display:none;min-width:200px;
+    background:#0f0f0f;border:1px solid var(--line2);border-radius:6px;
+    padding:6px;box-shadow:0 10px 34px rgba(0,0,0,.65);
+    font-family:'Noto Sans SC',sans-serif;
+  }
+  .ctx-menu .ctx-sel{
+    font-size:12px;color:var(--fg3);padding:6px 10px 8px;
+    border-bottom:1px solid var(--line);margin-bottom:4px;
+    max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .ctx-item{
+    display:flex;align-items:center;gap:9px;width:100%;
+    padding:10px 11px;border-radius:4px;font-size:14px;color:var(--fg);
+    text-align:left;font-family:inherit;
+  }
+  .ctx-item:hover{ background:rgba(138,43,37,.22); color:var(--seal); }
+
+  /* ===== 搜索弹窗 ===== */
+  .search-modal{
+    position:fixed;inset:0;z-index:250;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(0,0,0,.72);
+  }
+  .search-modal.on{display:flex}
+  .search-panel{
+    width:100%;max-width:560px;background:#0a0a0a;
+    border:2px solid var(--white);border-radius:6px;
+    box-shadow:8px 8px 0 0 rgba(255,255,255,.18);
+    animation:modalIn .22s ease-out;max-height:80vh;display:flex;flex-direction:column;
+  }
+  .search-head{
+    padding:14px 18px;border-bottom:2px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .search-head h2{font-size:14px;font-weight:900;color:var(--white)}
+  .search-head .sq{font-family:'Space Mono',monospace;font-size:12px;color:var(--seal)}
+  .search-body{padding:14px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+  .search-item{
+    text-align:left;padding:12px 14px;background:#151515;
+    border:1.5px solid var(--line2);border-radius:4px;cursor:pointer;transition:.15s;
+  }
+  .search-item:hover{background:var(--white);border-color:var(--white);transform:translateX(3px)}
+  .search-item:hover .si-title{color:#000}
+  .search-item:hover .si-snippet{color:#222}
+  .search-item:hover .si-snippet mark{background:var(--seal);color:#fff}
+  .si-title{font-size:13px;font-weight:900;color:var(--white);margin-bottom:5px;font-family:'Noto Serif SC',serif}
+  .si-snippet{font-size:12px;color:var(--fg2);line-height:1.6;font-family:'Noto Sans SC',sans-serif}
+  .si-snippet mark{background:#caa23a;color:#1a1a1a;padding:0 2px;border-radius:2px;font-weight:700}
+  .search-empty{padding:22px;color:var(--fg3);font-family:'Space Mono',monospace;font-size:12px;text-align:center}
+
+  .doc-foot{
+    padding:14px 24px;background:#0a0a0a;
+    border-top:2px solid var(--line);
+    border-radius:0 0 4px 4px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;
+  }
+  .doc-foot .hint{
+    font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--fg3);line-height:1.5;
+  }
+  .doc-foot .hint b{color:var(--seal);font-weight:700}
+  .btn-primary{
+    padding:9px 22px;background:var(--white);color:#000;
+    font-weight:900;font-size:12.5px;letter-spacing:.08em;
+    border-radius:3px;border:2px solid var(--white);transition:.15s;
+    white-space:nowrap;
+  }
+  .btn-primary:hover{background:#dcdcdc}
+  .btn-close-x{
+    position:absolute;top:14px;right:14px;
+    width:30px;height:30px;border:1.5px solid #c8bb9e;
+    background:transparent;border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;color:#7a6a52;
+    transition:.15s;z-index:5;
+  }
+  .btn-close-x:hover{background:#2b2620;color:var(--paper);border-color:#2b2620}
+
+  /* 选择器弹窗 */
+  .picker-panel{
+    width:100%;max-width:540px;
+    background:#0a0a0a;border:2px solid var(--white);
+    border-radius:6px;box-shadow:8px 8px 0 0 rgba(255,255,255,.2);
+    animation:modalIn .22s ease-out;
+  }
+  .picker-head{
+    padding:14px 18px;border-bottom:2px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .picker-head h2{font-size:14px;font-weight:900;color:var(--white)}
+  .picker-body{
+    padding:14px 18px;display:flex;flex-direction:column;gap:8px;
+    max-height:62vh;overflow-y:auto;
+  }
+  .picker-option{
+    width:100%;text-align:left;padding:11px 13px;
+    background:#151515;border:1.5px solid var(--line2);border-radius:3px;
+    color:var(--fg2);font-family:'Noto Serif SC',serif;font-size:12.5px;
+    font-weight:700;transition:.15s;line-height:1.55;
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .picker-option .po-src{
+    font-family:'Space Mono',monospace;font-size:9.5px;
+    color:var(--fg4);font-weight:400;
+  }
+  .picker-option:hover{
+    background:var(--white);color:#000;border-color:var(--white);
+    transform:translateX(3px);
+  }
+  .picker-option:hover .po-src{color:#555}
+  .picker-option.used{opacity:.35;cursor:not-allowed}
+  .picker-option.used:hover{transform:none;background:#151515;color:var(--fg2)}
+  .picker-empty{
+    padding:24px 18px;text-align:center;
+    font-family:'Space Mono',monospace;font-size:12px;
+    color:var(--fg4);line-height:1.7;
+  }
+  .picker-empty b{color:var(--seal)}
+
+  /* 终局 */
+  .final-modal{
+    position:fixed;inset:0;background:#000;z-index:200;
+    display:none;align-items:center;justify-content:center;
+    padding:24px;overflow-y:auto;
+  }
+  .final-modal.on{display:flex}
+  .final-panel{
+    width:100%;max-width:920px;border:3px solid var(--white);
+    border-radius:6px;padding:36px 40px;background:#000;
+    box-shadow:0 0 80px rgba(255,255,255,.1);
+    position:relative;animation:finalIn .8s ease-out;
+  }
+  @keyframes finalIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+  .final-panel::before{
+    content:'';position:absolute;inset:-40px;
+    border:1px solid rgba(255,255,255,.08);border-radius:8px;pointer-events:none;
+  }
+  .final-badge{
+    display:inline-block;padding:5px 12px;background:var(--white);color:#000;
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:900;
+    letter-spacing:.2em;margin-bottom:16px;
+  }
+  .final-title{
+    font-size:32px;font-weight:900;color:var(--white);
+    letter-spacing:.06em;line-height:1.25;margin-bottom:6px;
+  }
+  .final-sub{
+    font-family:'Space Mono',monospace;font-size:13px;
+    color:var(--fg2);margin-bottom:28px;line-height:1.7;
+  }
+  .final-sub em{font-style:normal;color:var(--white)}
+  .final-map{
+    border:1.5px solid var(--line2);border-radius:4px;
+    padding:16px;background:#050505;margin-bottom:24px;
+  }
+  .final-map-head{
+    font-family:'Space Mono',monospace;font-size:11px;color:var(--fg3);
+    display:flex;justify-content:space-between;margin-bottom:12px;
+    padding-bottom:10px;border-bottom:1px solid var(--line);
+  }
+  .final-map-head b{color:var(--white)}
+  .ship-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:640px){
+    .ship-grid{grid-template-columns:1fr 1fr}
+    .final-title{font-size:24px}
+    .final-panel{padding:24px 20px}
+  }
+  .ship-cell{
+    padding:12px 14px;border-radius:3px;font-family:'Space Mono',monospace;
+    text-align:left;border:1.5px solid var(--line2);background:#0d0d0d;
+    color:var(--fg4);transition:.3s;
+  }
+  .ship-cell.revealed{
+    background:var(--white);color:#000;border-color:var(--white);
+    box-shadow:0 0 20px rgba(255,255,255,.15);
+  }
+  .ship-cell .ship-name{
+    font-size:14px;font-weight:900;display:block;
+    letter-spacing:.08em;margin-bottom:4px;
+  }
+  .ship-cell .ship-meta{font-size:10px;line-height:1.5;opacity:.85}
+  .final-foot{
+    display:flex;justify-content:center;gap:14px;margin-top:24px;
+    padding-top:20px;border-top:1px solid var(--line);
+  }
+  .btn-final{
+    padding:12px 32px;background:var(--white);color:#000;
+    font-weight:900;font-size:13.5px;letter-spacing:.1em;
+    border-radius:3px;transition:.15s;border:2px solid var(--white);
+  }
+  .btn-final:hover{background:#dcdcdc;transform:translateY(-1px)}
+
+  /* 闪屏 */
+  @keyframes flashInvert{
+    0%,100%{filter:invert(0)}
+    50%{filter:invert(1)}
+  }
+  .reveal-flash{animation:flashInvert .3s ease-in-out 2}
+
+  /* 提示 */
+  .toast{
+    position:fixed;left:50%;bottom:88px;
+    transform:translateX(-50%) translateY(10px);
+    background:#1a1a1a;border:1.5px solid var(--line3);color:var(--fg);
+    padding:10px 20px;font-family:'Space Mono',monospace;font-size:12px;
+    letter-spacing:.05em;border-radius:3px;opacity:0;transition:.25s;
+    pointer-events:none;z-index:300;box-shadow:0 8px 30px rgba(0,0,0,.6);
+    max-width:80vw;text-align:center;
+  }
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ========== 顶栏 ========== -->
+<header class="topbar">
+  <div class="zoom-group">
+    <div class="zoom-btns">
+      <button onclick="adjustZoom(0.1)" title="放大">+</button>
+      <button onclick="adjustZoom(-0.1)" title="缩小">−</button>
+    </div>
+    <span class="zoom-val mono" id="zoomVal">100%</span>
+  </div>
+
+  <div class="title-banner">
+    <span>马江海战殉国舰队调查案卷 · 其一 [老掌柜]</span>
+  </div>
+
+  <div class="topbar-right">
+    <button class="audio-btn mono" id="soundBtn" onclick="toggleAudio()">
+      <span id="soundIcon">🔇</span>
+      <span id="soundText">AUDIO: OFF</span>
+    </button>
+    <div class="sys-meta mono">
+      <div>FILE: MAWEI-1884</div>
+      <div>STATE: <b>UNRESOLVED</b></div>
+    </div>
+  </div>
+</header>
+
+<!-- ========== 主体 ========== -->
+<div class="workspace">
+
+  <!-- 左侧：卷宗列表 -->
+  <aside class="archive-list">
+    <h2>ARCHIVE · 卷宗</h2>
+    <div id="archiveList"></div>
+  </aside>
+
+  <!-- 中间：画布 -->
+  <div class="viewport" id="viewport">
+    <div class="canvas" id="canvas">
+      <svg class="svg-lines" id="svgLines" viewBox="0 0 1400 900" preserveAspectRatio="xMinYMin meet"></svg>
+
+      <!-- 目标卡 -->
+      <div class="card target" id="card-0">
+        <div class="card-header">
+          <span>调查核心 · 目标</span>
+          <span class="tag mono">TARGET</span>
+        </div>
+        <div class="card-body">
+          <div class="target-layout">
+            <div class="target-photo">
+              <span class="q">?</span>
+              <span class="lbl">NO PHOTO</span>
+            </div>
+            <div class="target-fields">
+              <div>
+                <div class="field-label"><span>代号 / CODENAME</span></div>
+                <div class="codename">老掌柜</div>
+              </div>
+              <div>
+                <div class="field-label"><span>身份 / ENTITY</span></div>
+                <button class="slot" id="slot-0-role" onclick="openPicker(0,'role')">
+                  <span class="slot-text">[ 未知实体 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="field-label"><span>解剖 / 创伤异样</span></div>
+            <button class="slot" id="slot-0-wound" onclick="openPicker(0,'wound')">
+              <span class="slot-text">[ 未知受创特征 ]</span>
+              <span class="slot-icon">＋</span>
+            </button>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="label">CONTEXT</span>
+          <span>光绪十年七月初三 · 未时 · 马江江面</span>
+        </div>
+      </div>
+
+      <!-- 人物卡 1 -->
+      <div class="card person c1" id="card-1">
+        <div class="card-header">
+          <span>关联要员 A</span>
+          <span class="tag mono">PERSON</span>
+        </div>
+        <div class="card-body">
+          <div class="person-row">
+            <div class="person-photo">?</div>
+            <div class="person-fields">
+              <div>
+                <div class="field-label"><span>真实姓名</span></div>
+                <button class="slot" id="slot-1-name" onclick="openPicker(1,'name')">
+                  <span class="slot-text">[ 未知姓名 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+              <div>
+                <div class="field-label"><span>官职 / 职责</span></div>
+                <button class="slot" id="slot-1-role" onclick="openPicker(1,'role')">
+                  <span class="slot-text">[ 未知职务 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="label">已知指令</span>
+          <span>“严禁开炮，擅动者论处”</span>
+        </div>
+      </div>
+
+      <!-- 人物卡 2 -->
+      <div class="card person c2" id="card-2">
+        <div class="card-header">
+          <span>关联要员 B</span>
+          <span class="tag mono">PERSON</span>
+        </div>
+        <div class="card-body">
+          <div class="person-row">
+            <div class="person-photo">?</div>
+            <div class="person-fields">
+              <div>
+                <div class="field-label"><span>真实姓名</span></div>
+                <button class="slot" id="slot-2-name" onclick="openPicker(2,'name')">
+                  <span class="slot-text">[ 未知姓名 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+              <div>
+                <div class="field-label"><span>官职 / 职责</span></div>
+                <button class="slot" id="slot-2-role" onclick="openPicker(2,'role')">
+                  <span class="slot-text">[ 未知职务 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="label">已知行动</span>
+          <span>开战后率先弃舰离场</span>
+        </div>
+      </div>
+
+      <!-- 人物卡 3 -->
+      <div class="card person c3" id="card-3">
+        <div class="card-header">
+          <span>关联要员 C</span>
+          <span class="tag mono">PERSON</span>
+        </div>
+        <div class="card-body">
+          <div class="person-row">
+            <div class="person-photo">?</div>
+            <div class="person-fields">
+              <div>
+                <div class="field-label"><span>真实姓名</span></div>
+                <button class="slot" id="slot-3-name" onclick="openPicker(3,'name')">
+                  <span class="slot-text">[ 未知姓名 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+              <div>
+                <div class="field-label"><span>官职 / 职责</span></div>
+                <button class="slot" id="slot-3-role" onclick="openPicker(3,'role')">
+                  <span class="slot-text">[ 未知职务 ]</span>
+                  <span class="slot-icon">＋</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="label">绝唱口令</span>
+          <span>“向敌发射尾炮，死战到底！”</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 右侧：待办 + 笔记本 -->
+  <aside class="sidebar">
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">
+        <h3>待办列表 CHECKLIST</h3>
+        <span class="tag mono">TASKS</span>
+      </div>
+      <p>拖选案卷中的文字，右键<b>收藏</b>入笔记本，再归位至关系图。</p>
+    </div>
+
+    <div>
+      <div class="section-title">
+        <span>PROGRESS</span>
+      </div>
+      <div class="todo-list">
+        <div class="todo" id="todo-1">
+          <span class="check" id="check-1"></span>
+          <span>检视案卷并选中关键线索</span>
+        </div>
+        <div class="todo" id="todo-2">
+          <span class="check" id="check-2"></span>
+          <span>整理笔记本中的线索</span>
+        </div>
+        <div class="todo" id="todo-3">
+          <span class="check" id="check-3"></span>
+          <span>填入真实姓名与职务</span>
+        </div>
+        <div class="todo" id="todo-4">
+          <span class="check" id="check-4"></span>
+          <span>确认“老掌柜”异样解剖记录</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div class="section-title">
+        <span>NOTEBOOK · 调查笔记本</span>
+        <span class="count" id="noteCount">0</span>
+      </div>
+      <div class="notebook" id="notebook">
+        <div class="empty-hint">
+          <span class="arrow">✒</span>
+          尚未收藏任何线索。<br>
+          打开【检视案卷】，<br>
+          用鼠标选中文字后右键收藏。
+        </div>
+      </div>
+    </div>
+
+    <button class="archive-btn" onclick="openArchive()">
+      <span>📁</span>
+      <span>检视遗留案卷与书信</span>
+    </button>
+
+  </aside>
+</div>
+
+<!-- ========== 底栏 ========== -->
+<footer class="bottombar">
+  <button class="circle-btn" onclick="openArchive()" title="案卷">
+    📁
+    <span class="badge" id="archiveBadge">4</span>
+  </button>
+  <button class="circle-btn primary" onclick="playClick()" title="关系图">🕸️</button>
+  <button class="circle-btn" onclick="playClick()" title="检索">🔍</button>
+  <button class="circle-btn" onclick="playClick()" title="笔录">📝</button>
+  <button class="circle-btn" onclick="playClick()" title="设置">⚙️</button>
+  <div class="bottombar-status">
+    SYSTEM: READY // MINJIANG RIVER EXPEDITION 1884
+  </div>
+</footer>
+
+<!-- ========== 案卷弹窗 ========== -->
+<div class="modal" id="archiveModal">
+  <div class="doc-modal-panel">
+    <div class="doc-paper" id="docPaper">
+      <button class="btn-close-x" onclick="closeArchive()">✕</button>
+      <!-- 动态内容 -->
+    </div>
+    <div class="doc-foot">
+      <span class="hint">
+        用鼠标<b>选中文字</b>，右键可「收藏」或「在案卷中检索」
+      </span>
+      <button class="btn-primary" onclick="closeArchive()">合 卷</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 选择器弹窗 ========== -->
+<div class="modal" id="pickerModal">
+  <div class="picker-panel">
+    <div class="picker-head">
+      <h2 id="pickerTitle">从笔记本中选择线索</h2>
+      <button class="btn-close-x" style="position:static" onclick="closePicker()">✕</button>
+    </div>
+    <div class="picker-body" id="pickerBody"></div>
+  </div>
+</div>
+
+<!-- ========== 终局 ========== -->
+<div class="final-modal" id="finalModal">
+  <div class="final-panel">
+    <div class="final-badge mono">REVEAL PROTOCOL COMPLETE</div>
+    <h1 class="final-title">清军福建水师旗舰 · 扬武号</h1>
+    <div class="final-sub">
+      <em>“他们不是死在这场海战里的具体某个人，他们就是这场海战本身。”</em>
+    </div>
+
+    <div class="final-map">
+      <div class="final-map-head">
+        <span>1884年8月23日 13:56 · 闽江马江海域 · 战术定位图</span>
+        <span><b>1 / 9</b> 艘已解密</span>
+      </div>
+      <div class="ship-grid" id="shipGrid"></div>
+    </div>
+
+    <div class="final-foot">
+      <button class="btn-final" onclick="location.reload()">重新开始调查</button>
+    </div>
+  </div>
+</div>
+
+<!-- 提示 -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== 右键菜单 ========== -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-sel"></div>
+  <button class="ctx-item" data-act="search">🔍 在案卷中检索</button>
+  <button class="ctx-item" data-act="collect">📌 收藏到笔记本</button>
+</div>
+
+<!-- ========== 搜索弹窗 ========== -->
+<div class="search-modal" id="searchModal">
+  <div class="search-panel">
+    <div class="search-head">
+      <h2>案卷检索结果</h2>
+      <button class="btn-close-x" style="position:static" onclick="closeSearch()">✕</button>
+    </div>
+    <div class="search-body" id="searchList"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   状态
+   ========================================================= */
+const state = {
+  zoom: 1.0,
+  audioOn: false,
+  audioCtx: null,
+  notes: [],           // { id, text, source, time, used }
+  readDocs: new Set(),
+  slots: {
+    0: { role: null, wound: null },
+    1: { name: null, role: null },
+    2: { name: null, role: null },
+    3: { name: null, role: null }
+  },
+  activeCard: null,
+  activeSlot: null,
+  activeDoc: 0,
+  finished: false
+};
+
+/* 正确答案 */
+const ANSWERS = {
+  0: { role: ['闽江第一号木胁铁壳舰', '福建水师旗舰'], wound: ['右舷水下贯穿破洞'] },
+  1: { name: ['张佩纶'] },
+  2: { name: ['张成'] },
+  3: { name: ['麦元良'] }
+};
+
+/* 九舰 */
+const SHIPS = [
+  { name: '扬武', meta: '旗舰 · 13:56 沉没于闽江口' },
+  { name: '福星', meta: '管带陈英 阵亡' },
+  { name: '振威', meta: '管带许寿山 阵亡' },
+  { name: '飞云', meta: '管带高腾云 阵亡' },
+  { name: '济安', meta: '力战而沉' },
+  { name: '永保', meta: '力竭而没' },
+  { name: '琛航', meta: '全船殉难' },
+  { name: '福胜', meta: '管带叶琛 阵亡' },
+  { name: '建胜', meta: '管带林森林 阵亡' }
+];
+
+/* =========================================================
+   案卷内容（含划线关键词）
+   ========================================================= */
+const DOCS = [
+  {
+    id: 'd1',
+    title: '会办海防密函',
+    date: '光绪十年七月初三 · 未时前',
+    body: `
+      <p class="no-indent"><strong>朝廷上谕摘录：</strong>“法夷游弋马江，战和未定。切不可先发制人，致招开端。”</p>
+      <p>会办福建海防大臣 张佩纶 下达严令：各舰原锚不动，违者按军法处决。</p>
+      <p>【调查提示】张佩纶以朝廷会办大臣之尊，严禁战舰开火，致使“老掌柜”陷入被动受击境地。</p>
+    `
+  },
+  {
+    id: 'd2',
+    title: '备忘口供记录',
+    date: '光绪十年七月初三 · 战后',
+    body: `
+      <p class="no-indent"><strong>幸存营兵证言：</strong>“战前老掌柜请移锚罗星塔，水师提督 张成 怒斥不许。”</p>
+      <p>及至未时炮响，提督 福建水师提督 张成见形势大乱，未登舰指挥即仓皇逃往岸上避难。</p>
+    `
+  },
+  {
+    id: 'd3',
+    title: '损管血书残页',
+    date: '光绪十年七月初三 · 未时',
+    body: `
+      <p class="no-indent"><strong>损管日志残页：</strong>“敌鱼雷艇逼近右舷，旗舰管带 麦元良 屹立飞檐。”</p>
+      <p>管带 扬武号管带 麦元良与老掌柜死守尾炮，命中法舰后同沉江底。</p>
+    `
+  },
+  {
+    id: 'd4',
+    title: '老掌柜异样解剖记录',
+    date: '光绪十年八月 · 绝密',
+    body: `
+      <p class="no-indent"><strong>绝密打捞剖析：</strong>“老掌柜沉水处位于江心，打捞发现其躯体异样：”</p>
+      <p>一、并非血肉之躯，实为 闽江第一号木胁铁壳舰。</p>
+      <p>二、右舷水下发现 右舷水下贯穿破洞，系受鱼雷击爆所致。</p>
+      <p>三、其职务兼任 福建水师旗舰。</p>
+    `
+  }
+];
+
+/* =========================================================
+   音频
+   ========================================================= */
+function initAudio(){
+  if(!state.audioCtx){
+    try{ state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+}
+function toggleAudio(){
+  initAudio();
+  state.audioOn = !state.audioOn;
+  document.getElementById('soundIcon').textContent = state.audioOn ? '🔊' : '🔇';
+  document.getElementById('soundText').textContent = state.audioOn ? 'AUDIO: ON' : 'AUDIO: OFF';
+  if(state.audioOn && state.audioCtx && state.audioCtx.state === 'suspended'){
+    state.audioCtx.resume();
+  }
+}
+function playClick(){
+  if(!state.audioOn || !state.audioCtx) return;
+  try{
+    const o = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    o.type = 'square';
+    o.frequency.setValueAtTime(880, state.audioCtx.currentTime);
+    g.gain.setValueAtTime(0.012, state.audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + 0.03);
+    o.connect(g); g.connect(state.audioCtx.destination);
+    o.start(); o.stop(state.audioCtx.currentTime + 0.03);
+  }catch(e){}
+}
+/* 划线音效 —— 短促而清脆 */
+function playStroke(){
+  if(!state.audioOn || !state.audioCtx) return;
+  try{
+    const o = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(1200, state.audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(400, state.audioCtx.currentTime + 0.12);
+    g.gain.setValueAtTime(0.02, state.audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + 0.14);
+    o.connect(g); g.connect(state.audioCtx.destination);
+    o.start(); o.stop(state.audioCtx.currentTime + 0.14);
+  }catch(e){}
+}
+function playRumble(){
+  if(!state.audioOn || !state.audioCtx) return;
+  try{
+    const o = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(90, state.audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(30, state.audioCtx.currentTime + 1.6);
+    g.gain.setValueAtTime(0.25, state.audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + 1.6);
+    o.connect(g); g.connect(state.audioCtx.destination);
+    o.start(); o.stop(state.audioCtx.currentTime + 1.6);
+  }catch(e){}
+}
+
+/* =========================================================
+   缩放
+   ========================================================= */
+function adjustZoom(delta){
+  playClick();
+  state.zoom = Math.min(Math.max(0.6, state.zoom + delta), 1.6);
+  applyZoom();
+}
+function applyZoom(){
+  document.getElementById('canvas').style.transform = `scale(${state.zoom})`;
+  document.getElementById('zoomVal').textContent = Math.round(state.zoom * 100) + '%';
+}
+
+/* =========================================================
+   SVG 连线
+   ========================================================= */
+function drawLines(){
+  const svg = document.getElementById('svgLines');
+  const target = document.getElementById('card-0');
+  const targetBottom = { x: 700, y: 70 + target.offsetHeight };
+  const personTops = [
+    { x: 60 + 170,  y: 490 },
+    { x: 530 + 170, y: 490 },
+    { x: 1000 + 170,y: 490 }
+  ];
+  let html = '';
+  personTops.forEach((pt, i) => {
+    const cardId = i + 1;
+    const solved = isCardSolved(cardId);
+    const cls = solved ? 'active' : '';
+    html += `<line x1="${targetBottom.x}" y1="${targetBottom.y}" x2="${pt.x}" y2="${pt.y}" class="${cls}"/>`;
+    html += `<circle cx="${targetBottom.x}" cy="${targetBottom.y}" r="4" class="${cls}"/>`;
+    html += `<circle cx="${pt.x}" cy="${pt.y}" r="4" class="${cls}"/>`;
+  });
+  svg.innerHTML = html;
+}
+
+/* =========================================================
+   左侧卷宗列表
+   ========================================================= */
+function renderArchiveList(){
+  const el = document.getElementById('archiveList');
+  el.innerHTML = DOCS.map((d, i) => `
+    <div class="arch-item ${state.readDocs.has(d.id) ? 'done' : ''}"
+         onclick="openArchive(${i})">
+      <div class="ai-title">${d.title}</div>
+      <div class="ai-date mono">${d.date}</div>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   打开案卷
+   ========================================================= */
+function openArchive(idx){
+  if(idx === undefined) idx = state.activeDoc;
+  playClick();
+  state.activeDoc = idx;
+  const d = DOCS[idx];
+  state.readDocs.add(d.id);
+
+  const paper = document.getElementById('docPaper');
+  paper.innerHTML = `
+    <button class="btn-close-x" onclick="closeArchive()">✕</button>
+    <div class="doc-eyebrow">
+      <span>ARCHIVE · 卷宗${['一','二','三','四'][idx] || ''}</span>
+      <span class="seal-mark">闽省海防局 · 机密</span>
+    </div>
+    <div class="doc-title">${d.title}</div>
+    <div class="doc-date">${d.date}</div>
+    <div class="doc-body">${d.body}</div>
+  `;
+
+  /* 案卷已改为纯文本，支持自由选中文字 + 右键操作 */
+
+  document.getElementById('archiveModal').classList.add('on');
+  renderArchiveList();
+  markTodoDone(1);
+}
+
+function closeArchive(){
+  playClick();
+  document.getElementById('archiveModal').classList.remove('on');
+}
+
+/* =========================================================
+   文本选择 + 右键菜单 + 案卷检索 + 收藏
+   ========================================================= */
+let ctxSelected = '';
+const ctxMenu = document.getElementById('ctxMenu');
+
+/* 归一化：把自由选中的文字对齐到已知答案，提升命中率 */
+function normalizeClue(raw){
+  const t = (raw||'').replace(/\s+/g,'').trim();
+  if(!t) return (raw||'').trim();
+  for(const cid in ANSWERS){
+    for(const k in ANSWERS[cid]){
+      for(const v of ANSWERS[cid][k]){
+        if(t === v) return v;
+      }
+    }
+  }
+  const all = [];
+  for(const cid in ANSWERS){
+    for(const k in ANSWERS[cid]){
+      for(const v of ANSWERS[cid][k]) all.push(v);
+    }
+  }
+  all.sort((x,y)=>y.length-x.length);
+  for(const v of all){
+    if(t.includes(v)) return v;
+  }
+  return (raw||'').trim();
+}
+
+/* 收藏选中的文字 */
+function collectSelection(raw){
+  const clue = normalizeClue(raw);
+  if(state.notes.some(n => n.text === clue)){
+    toast('此条信息已在笔记本中。');
+    return;
+  }
+  playStroke();
+  const d = DOCS[state.activeDoc];
+  const note = {
+    id: 'n' + Date.now() + Math.random().toString(36).slice(2,6),
+    text: clue,
+    source: d ? d.title : '案卷标注',
+    time: d ? d.date.split('·').pop().trim() : '',
+    used: false
+  };
+  state.notes.push(note);
+  renderNotebook();
+  markTodoDone(2);
+  toast(`📌 已收藏：「${clue}」`);
+}
+
+/* 右键菜单显隐 */
+function showCtxMenu(x, y, text){
+  ctxMenu.style.display = 'block';
+  const mw = ctxMenu.offsetWidth, mh = ctxMenu.offsetHeight;
+  let nx = x, ny = y;
+  if(x + mw > window.innerWidth)  nx = window.innerWidth  - mw - 8;
+  if(y + mh > window.innerHeight) ny = window.innerHeight - mh - 8;
+  if(nx < 8) nx = 8;
+  if(ny < 8) ny = 8;
+  ctxMenu.style.left = nx + 'px';
+  ctxMenu.style.top  = ny + 'px';
+  ctxMenu.querySelector('.ctx-sel').textContent = text.length > 26 ? text.slice(0,26) + '…' : text;
+}
+function hideCtxMenu(){ ctxMenu.style.display = 'none'; }
+
+/* 在案卷中检索（游戏内） */
+function searchInGame(q){
+  q = (q||'').trim();
+  if(!q) return;
+  const qn = q.replace(/\s+/g,'');
+  const results = [];
+  DOCS.forEach((d, i) => {
+    const plain = d.body.replace(/<[^>]+>/g,'').replace(/\s+/g,'');
+    if(plain.includes(qn)){
+      results.push({ i, title: d.title, snippet: makeSnippet(d, q) });
+    }
+  });
+  const list = document.getElementById('searchList');
+  if(results.length === 0){
+    list.innerHTML = `<div class="search-empty">案卷中未检索到「${q}」</div>`;
+  } else {
+    list.innerHTML = results.map(r => `
+      <div class="search-item" onclick="openArchive(${r.i}); closeSearch()">
+        <div class="si-title">${r.title}</div>
+        <div class="si-snippet">${r.snippet}</div>
+      </div>`).join('');
+  }
+  document.getElementById('searchModal').classList.add('on');
+  playClick();
+}
+function makeSnippet(d, q){
+  const plain = d.body.replace(/<[^>]+>/g,'').replace(/\s+/g,'');
+  const qn = q.replace(/\s+/g,'');
+  const idx = plain.indexOf(qn);
+  const start = Math.max(0, idx - 16);
+  const end = Math.min(plain.length, idx + qn.length + 16);
+  let s = plain.slice(start, end);
+  s = s.replace(qn, '<mark>' + qn + '</mark>');
+  return (start > 0 ? '…' : '') + s + (end < plain.length ? '…' : '');
+}
+function closeSearch(){
+  document.getElementById('searchModal').classList.remove('on');
+  hideCtxMenu();
+}
+
+/* =========================================================
+   笔记本渲染
+   ========================================================= */
+function renderNotebook(){
+  const nb = document.getElementById('notebook');
+  document.getElementById('noteCount').textContent = state.notes.length;
+
+  if(state.notes.length === 0){
+    nb.innerHTML = `
+      <div class="empty-hint">
+        <span class="arrow">✒</span>
+        尚未收藏任何线索。<br>
+        打开【检视案卷】，<br>
+        用鼠标选中文字后右键收藏。
+      </div>`;
+    return;
+  }
+
+  nb.innerHTML = state.notes.map(n => `
+    <div class="note ${n.used ? 'used' : ''}" data-id="${n.id}">
+      <div class="note-head">
+        <span class="note-source">${n.source}</span>
+        <span class="note-time">${n.time}</span>
+      </div>
+      <div class="note-text"><span class="underline">${n.text}</span></div>
+      <div class="note-hint">${n.used ? '已归位' : '点击归位至关系图'}</div>
+    </div>
+  `).join('');
+
+  /* 笔记本内点击 = 打开归位提示 */
+  nb.querySelectorAll('.note:not(.used)').forEach(el => {
+    el.onclick = () => {
+      playClick();
+      toast('请在关系图中点击空槽位，再从笔记本中选择此线索。');
+    };
+  });
+}
+
+/* =========================================================
+   选择器 —— 从笔记本选取
+   ========================================================= */
+function openPicker(cardId, slotType){
+  if(state.finished) return;
+  playClick();
+  state.activeCard = cardId;
+  state.activeSlot = slotType;
+
+  const body = document.getElementById('pickerBody');
+  const title = document.getElementById('pickerTitle');
+  title.textContent = `从笔记本中选择线索 · 卡片${cardId === 0 ? '目标' : cardId}`;
+  document.getElementById('pickerModal').classList.add('on');
+
+  const current = state.slots[cardId][slotType];
+  const options = state.notes.filter(n => !n.used || n.text === current);
+
+  if(options.length === 0){
+    body.innerHTML = `
+      <div class="picker-empty">
+        笔记本中尚无可用线索。<br>
+        请先打开<b>【检视案卷】</b>，<br>
+        选中文字并右键收藏。
+      </div>`;
+    return;
+  }
+
+  body.innerHTML = options.map(n => `
+    <button class="picker-option" onclick="selectOption('${n.id}')">
+      <span>${n.text}</span>
+      <span class="po-src">${n.source} · ${n.time}</span>
+    </button>
+  `).join('');
+}
+function closePicker(){
+  document.getElementById('pickerModal').classList.remove('on');
+}
+
+function selectOption(noteId){
+  playClick();
+  const note = state.notes.find(n => n.id === noteId);
+  if(!note) return;
+  const { activeCard: cid, activeSlot: st } = state;
+
+  /* 若该槽位原有内容，恢复原笔记的 used 状态 */
+  const prev = state.slots[cid][st];
+  if(prev){
+    const prevNote = state.notes.find(n => n.text === prev);
+    if(prevNote) prevNote.used = false;
+  }
+
+  state.slots[cid][st] = note.text;
+  note.used = true;
+
+  const btn = document.getElementById(`slot-${cid}-${st}`);
+  btn.querySelector('.slot-text').textContent = note.text;
+  btn.classList.add('filled');
+  btn.querySelector('.slot-icon').textContent = '✓';
+
+  closePicker();
+  renderNotebook();
+  markTodoDone(3);
+  checkCardComplete(cid);
+  checkVictory();
+}
+
+/* =========================================================
+   校验
+   ========================================================= */
+function isCardSolved(cid){
+  const s = state.slots[cid];
+  const a = ANSWERS[cid];
+  for(const key in a){
+    if(!s[key] || !a[key].includes(s[key])) return false;
+  }
+  return true;
+}
+function checkCardComplete(cid){
+  if(isCardSolved(cid)){
+    document.getElementById(`card-${cid}`).classList.add('complete');
+  }
+  drawLines();
+}
+function checkVictory(){
+  const allSolved = [0,1,2,3].every(cid => isCardSolved(cid));
+  if(allSolved && !state.finished){
+    state.finished = true;
+    markTodoDone(4);
+    setTimeout(triggerFinal, 700);
+  }
+}
+
+/* =========================================================
+   终局
+   ========================================================= */
+function triggerFinal(){
+  playRumble();
+  document.body.classList.add('reveal-flash');
+  setTimeout(() => {
+    document.body.classList.remove('reveal-flash');
+    renderShipGrid();
+    document.getElementById('finalModal').classList.add('on');
+  }, 650);
+}
+function renderShipGrid(){
+  document.getElementById('shipGrid').innerHTML = SHIPS.map((s, i) => `
+    <div class="ship-cell ${i === 0 ? 'revealed' : ''}" style="animation-delay:${i * 0.12}s">
+      <span class="ship-name">${i === 0 ? s.name : '代号 · ' + s.name}</span>
+      <span class="ship-meta">${i === 0 ? s.meta : '🔒 未解密'}</span>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   待办
+   ========================================================= */
+function markTodoDone(n){
+  const t = document.getElementById(`todo-${n}`);
+  const c = document.getElementById(`check-${n}`);
+  if(t && c){ t.classList.add('done'); c.textContent = '✓'; }
+}
+
+/* =========================================================
+   提示
+   ========================================================= */
+let toastTimer = null;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* =========================================================
+   初始化
+   ========================================================= */
+function init(){
+  renderArchiveList();
+  renderNotebook();
+  applyZoom();
+  setTimeout(drawLines, 100);
+  setTimeout(drawLines, 500);
+  window.addEventListener('resize', drawLines);
+  window.addEventListener('load', drawLines);
+
+  /* 文本选择 + 右键菜单 */
+  document.addEventListener('contextmenu', (e) => {
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().trim() : '';
+    if(text.length === 0){ hideCtxMenu(); return; }
+    e.preventDefault();
+    ctxSelected = text;
+    showCtxMenu(e.clientX, e.clientY, text);
+  });
+  document.addEventListener('click', (e) => {
+    if(ctxMenu.style.display === 'block' && !ctxMenu.contains(e.target)){
+      hideCtxMenu();
+    }
+  });
+  document.addEventListener('scroll', hideCtxMenu, true);
+  ctxMenu.querySelectorAll('.ctx-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.dataset.act;
+      hideCtxMenu();
+      if(act === 'search')  searchInGame(ctxSelected);
+      else if(act === 'collect') collectSelection(ctxSelected);
+    });
+  });
+}
+init();
+</script>
+</body>
+</html>
