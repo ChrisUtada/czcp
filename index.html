@@ -190,9 +190,11 @@
     width:100%;text-align:left;background:#1a1a1a;
     border:1.5px solid var(--line2);border-radius:3px;
     padding:7px 9px;font-size:12px;font-weight:700;color:#888;
-    transition:.15s;display:flex;align-items:center;justify-content:space-between;
-    gap:8px;min-height:34px;
+    transition:.15s;display:flex;flex-direction:column;gap:5px;
+    min-height:34px;
   }
+  .slot-main{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;cursor:pointer}
+  .slot-main:hover .slot-text{color:var(--fg2)}
   .slot .slot-text{
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;
   }
@@ -202,6 +204,31 @@
   .slot.filled{background:#151515;border-color:#555;color:var(--fg)}
   .slot.filled .slot-icon{color:var(--white)}
   .slot.filled:hover{border-color:var(--white);background:#1e1e1e}
+  .slot.tentative{border:1.5px dashed #b8860b;background:#1c1607;color:#e8c970}
+  .slot.tentative .slot-icon{color:#e8c970}
+  .slot.confirmed{border:1.5px solid var(--white);background:#0e1a0e;color:#86e886;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+  .slot.confirmed .slot-icon{color:var(--white)}
+  .slot-badge{font-family:'Space Mono',monospace;font-size:9px;padding:1px 6px;border-radius:2px;background:#b8860b;color:#000;letter-spacing:.05em}
+  .slot.confirmed .slot-badge{background:var(--white)}
+  .slot-actions{display:none;gap:6px;width:100%}
+  .slot.tentative .slot-actions,.slot.confirmed .slot-actions{display:flex}
+  .slot-act{font-family:'Space Mono',monospace;font-size:10px;padding:3px 9px;border-radius:3px;border:1px solid var(--line2);background:#000;color:var(--fg2);cursor:pointer;transition:.15s}
+  .slot-act.confirm{border-color:#b8860b;color:#e8c970}
+  .slot-act.confirm:hover{background:#b8860b;color:#000}
+  .slot-act.unlock{border-color:#555;color:#999}
+  .slot-act.unlock:hover{border-color:var(--white);color:var(--fg)}
+  .picker-foot{display:flex;justify-content:flex-end;gap:10px;padding:12px 16px;border-top:1px solid var(--line)}
+  .btn-ghost{font-family:'Space Mono',monospace;font-size:11px;padding:7px 16px;background:transparent;border:1px solid var(--line2);color:var(--fg2);border-radius:3px;cursor:pointer}
+  .btn-ghost:hover{border-color:var(--white);color:var(--white)}
+  .btn-primary{font-family:'Space Mono',monospace;font-size:11px;padding:7px 16px;background:var(--white);color:#000;border:1px solid var(--white);border-radius:3px;cursor:pointer;font-weight:700}
+  .btn-primary:hover{background:#e6e6e6}
+  .evi-row{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:#151515;border:1.5px solid var(--line2);border-radius:3px;margin-bottom:8px;cursor:pointer;transition:.15s}
+  .evi-row:hover{background:#1d1d1d;border-color:#555}
+  .evi-row input{margin-top:3px;accent-color:var(--white);flex-shrink:0}
+  .evi-text{font-family:'Space Mono',monospace;font-size:12px;color:var(--fg);flex:1;min-width:0;word-break:break-all}
+  .evi-src{font-family:'Space Mono',monospace;font-size:9px;color:var(--fg4);align-self:center;margin-left:4px}
+  .note.cited{border-left:3px solid #b8860b}
+  .note.cited .note-hint{color:#e8c970}
 
   .person-row{display:flex;gap:10px;margin-bottom:10px}
   .person-photo{
@@ -771,19 +798,33 @@
               </div>
               <div>
                 <div class="field-label"><span>身份 / ENTITY</span></div>
-                <button class="slot" id="slot-0-role" onclick="openPicker(0,'role')">
-                  <span class="slot-text">[ 未知实体 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-0-role" data-cid="0" data-st="role">
+                  <div class="slot-main" onclick="openPicker(0,'role')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知实体 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(0,'role')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(0,'role')">解除</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div style="margin-top:12px">
             <div class="field-label"><span>解剖 / 创伤异样</span></div>
-            <button class="slot" id="slot-0-wound" onclick="openPicker(0,'wound')">
-              <span class="slot-text">[ 未知受创特征 ]</span>
-              <span class="slot-icon">＋</span>
-            </button>
+                <div class="slot" id="slot-0-wound" data-cid="0" data-st="wound">
+                  <div class="slot-main" onclick="openPicker(0,'wound')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知受创特征 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(0,'wound')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(0,'wound')">解除</button>
+                  </div>
+                </div>
           </div>
         </div>
         <div class="card-footer">
@@ -804,17 +845,31 @@
             <div class="person-fields">
               <div>
                 <div class="field-label"><span>真实姓名</span></div>
-                <button class="slot" id="slot-1-name" onclick="openPicker(1,'name')">
-                  <span class="slot-text">[ 未知姓名 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-1-name" data-cid="1" data-st="name">
+                  <div class="slot-main" onclick="openPicker(1,'name')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知姓名 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(1,'name')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(1,'name')">解除</button>
+                  </div>
+                </div>
               </div>
               <div>
                 <div class="field-label"><span>官职 / 职责</span></div>
-                <button class="slot" id="slot-1-role" onclick="openPicker(1,'role')">
-                  <span class="slot-text">[ 未知职务 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-1-role" data-cid="1" data-st="role">
+                  <div class="slot-main" onclick="openPicker(1,'role')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知职务 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(1,'role')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(1,'role')">解除</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -837,17 +892,31 @@
             <div class="person-fields">
               <div>
                 <div class="field-label"><span>真实姓名</span></div>
-                <button class="slot" id="slot-2-name" onclick="openPicker(2,'name')">
-                  <span class="slot-text">[ 未知姓名 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-2-name" data-cid="2" data-st="name">
+                  <div class="slot-main" onclick="openPicker(2,'name')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知姓名 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(2,'name')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(2,'name')">解除</button>
+                  </div>
+                </div>
               </div>
               <div>
                 <div class="field-label"><span>官职 / 职责</span></div>
-                <button class="slot" id="slot-2-role" onclick="openPicker(2,'role')">
-                  <span class="slot-text">[ 未知职务 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-2-role" data-cid="2" data-st="role">
+                  <div class="slot-main" onclick="openPicker(2,'role')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知职务 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(2,'role')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(2,'role')">解除</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -870,17 +939,31 @@
             <div class="person-fields">
               <div>
                 <div class="field-label"><span>真实姓名</span></div>
-                <button class="slot" id="slot-3-name" onclick="openPicker(3,'name')">
-                  <span class="slot-text">[ 未知姓名 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-3-name" data-cid="3" data-st="name">
+                  <div class="slot-main" onclick="openPicker(3,'name')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知姓名 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(3,'name')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(3,'name')">解除</button>
+                  </div>
+                </div>
               </div>
               <div>
                 <div class="field-label"><span>官职 / 职责</span></div>
-                <button class="slot" id="slot-3-role" onclick="openPicker(3,'role')">
-                  <span class="slot-text">[ 未知职务 ]</span>
-                  <span class="slot-icon">＋</span>
-                </button>
+                <div class="slot" id="slot-3-role" data-cid="3" data-st="role">
+                  <div class="slot-main" onclick="openPicker(3,'role')">
+                    <span class="slot-icon">＋</span>
+                    <span class="slot-text">[ 未知职务 ]</span>
+                    <span class="slot-badge" style="display:none"></span>
+                  </div>
+                  <div class="slot-actions">
+                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(3,'role')">确认</button>
+                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(3,'role')">解除</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -994,6 +1077,21 @@
   </div>
 </div>
 
+<!-- ========== 确认证据弹窗 ========== -->
+<div class="modal" id="confirmModal">
+  <div class="picker-panel">
+    <div class="picker-head">
+      <h2 id="confirmTitle">引用证据</h2>
+      <button class="btn-close-x" style="position:static" type="button" onclick="closeConfirm()">✕</button>
+    </div>
+    <div class="picker-body"><div id="confirmBody"></div></div>
+    <div class="picker-foot">
+      <button class="btn-ghost" type="button" onclick="closeConfirm()">取消</button>
+      <button class="btn-primary" type="button" onclick="confirmSlot()">确认结论</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== 终局 ========== -->
 <div class="final-modal" id="finalModal">
   <div class="final-panel">
@@ -1049,10 +1147,10 @@ const state = {
   notes: [],           // { id, text, source, time, used }
   readDocs: new Set(),
   slots: {
-    0: { role: null, wound: null },
-    1: { name: null, role: null },
-    2: { name: null, role: null },
-    3: { name: null, role: null }
+    0: { role: {value:null,status:'empty',evidence:[]}, wound: {value:null,status:'empty',evidence:[]} },
+    1: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} },
+    2: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} },
+    3: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} }
   },
   activeCard: null,
   activeSlot: null,
@@ -1062,10 +1160,13 @@ const state = {
 
 /* 正确答案 */
 const ANSWERS = {
-  0: { role: ['闽江第一号木胁铁壳舰', '福建水师旗舰'], wound: ['右舷水下贯穿破洞'] },
-  1: { name: ['张佩纶'] },
-  2: { name: ['张成'] },
-  3: { name: ['麦元良'] }
+  0: {
+    role:  { values: ['闽江第一号木胁铁壳舰', '福建水师旗舰'], evidence: ['木胁铁壳舰','闽江第一号','福建水师旗舰','旗舰'] },
+    wound: { values: ['右舷水下贯穿破洞'],                    evidence: ['右舷水下','贯穿破洞','破洞'] }
+  },
+  1: { name: { values: ['张佩纶'], evidence: ['张佩纶','会办福建海防','会办大臣'] } },
+  2: { name: { values: ['张成'],   evidence: ['张成','水师提督'] } },
+  3: { name: { values: ['麦元良'], evidence: ['麦元良','旗舰管带'] } }
 };
 
 /* 九舰 */
@@ -1283,7 +1384,7 @@ function normalizeClue(raw){
   if(!t) return (raw||'').trim();
   for(const cid in ANSWERS){
     for(const k in ANSWERS[cid]){
-      for(const v of ANSWERS[cid][k]){
+      for(const v of ANSWERS[cid][k].values){
         if(t === v) return v;
       }
     }
@@ -1291,7 +1392,7 @@ function normalizeClue(raw){
   const all = [];
   for(const cid in ANSWERS){
     for(const k in ANSWERS[cid]){
-      for(const v of ANSWERS[cid][k]) all.push(v);
+      for(const v of ANSWERS[cid][k].values) all.push(v);
     }
   }
   all.sort((x,y)=>y.length-x.length);
@@ -1315,7 +1416,8 @@ function collectSelection(raw){
     text: clue,
     source: d ? d.title : '案卷标注',
     time: d ? d.date.split('·').pop().trim() : '',
-    used: false
+    used: false,
+    cited: false
   };
   state.notes.push(note);
   renderNotebook();
@@ -1397,13 +1499,13 @@ function renderNotebook(){
   }
 
   nb.innerHTML = state.notes.map(n => `
-    <div class="note ${n.used ? 'used' : ''}" data-id="${n.id}">
+    <div class="note ${n.used ? 'used' : ''} ${n.cited ? 'cited' : ''}" data-id="${n.id}">
       <div class="note-head">
         <span class="note-source">${n.source}</span>
         <span class="note-time">${n.time}</span>
       </div>
       <div class="note-text"><span class="underline">${n.text}</span></div>
-      <div class="note-hint">${n.used ? '已归位' : '点击归位至关系图'}</div>
+      <div class="note-hint">${n.used ? '已归位' : (n.cited ? '已引用' : '点击归位至关系图')}</div>
     </div>
   `).join('');
 
@@ -1421,16 +1523,21 @@ function renderNotebook(){
    ========================================================= */
 function openPicker(cardId, slotType){
   if(state.finished) return;
+  const slot = state.slots[cardId][slotType];
+  if(slot.status === 'confirmed'){
+    toast('该结论已确认锁定，需先解除确认。');
+    return;
+  }
   playClick();
   state.activeCard = cardId;
   state.activeSlot = slotType;
 
   const body = document.getElementById('pickerBody');
   const title = document.getElementById('pickerTitle');
-  title.textContent = `从笔记本中选择线索 · 卡片${cardId === 0 ? '目标' : cardId}`;
+  title.textContent = `从笔记本选择线索 · 卡片${cardId === 0 ? '目标' : cardId}`;
   document.getElementById('pickerModal').classList.add('on');
 
-  const current = state.slots[cardId][slotType];
+  const current = slot.value;
   const options = state.notes.filter(n => !n.used || n.text === current);
 
   if(options.length === 0){
@@ -1443,43 +1550,152 @@ function openPicker(cardId, slotType){
     return;
   }
 
-  body.innerHTML = options.map(n => `
-    <button class="picker-option" onclick="selectOption('${n.id}')">
+  body.innerHTML = options.map(n => {
+    const isCur = (n.text === current);
+    const cls = (n.used && !isCur) ? ' used' : '';
+    return `<button class="picker-option${cls}" onclick="selectOption('${n.id}')">
       <span>${n.text}</span>
       <span class="po-src">${n.source} · ${n.time}</span>
-    </button>
-  `).join('');
+    </button>`;
+  }).join('');
 }
 function closePicker(){
   document.getElementById('pickerModal').classList.remove('on');
+}
+
+/* =========================================================
+   槽位状态：暂定 / 确认 / 解除
+   ========================================================= */
+const SLOT_PLACEHOLDER = {
+  0: { role: '[ 未知实体 ]', wound: '[ 未知受创特征 ]' },
+  1: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' },
+  2: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' },
+  3: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' }
+};
+
+function renderSlot(cid, st){
+  const slot = state.slots[cid][st];
+  const el = document.getElementById(`slot-${cid}-${st}`);
+  if(!el) return;
+  el.classList.remove('filled','tentative','confirmed');
+  const icon = el.querySelector('.slot-icon');
+  const text = el.querySelector('.slot-text');
+  const badge = el.querySelector('.slot-badge');
+  if(slot.status === 'empty'){
+    text.textContent = SLOT_PLACEHOLDER[cid][st];
+    icon.textContent = '＋';
+    badge.style.display = 'none';
+  } else if(slot.status === 'tentative'){
+    el.classList.add('tentative');
+    text.textContent = slot.value;
+    icon.textContent = '?';
+    badge.style.display = '';
+    badge.textContent = '暂定';
+  } else if(slot.status === 'confirmed'){
+    el.classList.add('confirmed');
+    text.textContent = slot.value;
+    icon.textContent = '✓';
+    badge.style.display = '';
+    badge.textContent = '已确认';
+  }
+}
+
+function evidenceCorresponds(cid, st, note){
+  const ev = ANSWERS[cid][st].evidence;
+  return ev.some(sub => note.text.includes(sub));
+}
+
+function openConfirm(cid, st){
+  const slot = state.slots[cid][st];
+  if(slot.status !== 'tentative'){ toast('请先填入暂定结论，再引用证据。'); return; }
+  state.activeCard = cid; state.activeSlot = st;
+  document.getElementById('confirmTitle').textContent = `引用证据 · 「${slot.value}」`;
+  const body = document.getElementById('confirmBody');
+  if(state.notes.length === 0){
+    body.innerHTML = `<div class="picker-empty">笔记本空空如也，无从引用证据。</div>`;
+    document.getElementById('confirmModal').classList.add('on');
+    return;
+  }
+  body.innerHTML = state.notes.map(n => {
+    const checked = (n.text === slot.value) ? 'checked' : '';
+    return `<label class="evi-row">
+      <input type="checkbox" class="evi-chk" value="${n.id}" ${checked}>
+      <span class="evi-text">${n.text}</span>
+      <span class="evi-src">${n.source} · ${n.time}</span>
+    </label>`;
+  }).join('');
+  document.getElementById('confirmModal').classList.add('on');
+}
+function closeConfirm(){
+  document.getElementById('confirmModal').classList.remove('on');
+}
+function confirmSlot(){
+  const cid = state.activeCard, st = state.activeSlot;
+  const slot = state.slots[cid][st];
+  if(!slot || slot.status !== 'tentative'){ closeConfirm(); return; }
+  const ans = ANSWERS[cid][st];
+  if(!ans.values.includes(slot.value)){
+    toast('查无实据，着即驳回：此结论不在卷宗所载之内。');
+    return;
+  }
+  const checks = Array.from(document.querySelectorAll('#confirmBody .evi-chk:checked'));
+  if(checks.length === 0){
+    toast('须至少引用一条证据，方可确认结论。');
+    return;
+  }
+  const ids = checks.map(c => c.value);
+  const ok = ids.some(id => {
+    const n = state.notes.find(x => x.id === id);
+    return n && evidenceCorresponds(cid, st, n);
+  });
+  if(!ok){
+    toast('所引证据与本结论无对应关系，驳回。');
+    return;
+  }
+  slot.evidence.forEach(id => { const n = state.notes.find(x => x.id === id); if(n) n.cited = false; });
+  slot.evidence = ids;
+  ids.forEach(id => { const n = state.notes.find(x => x.id === id); if(n) n.cited = true; });
+  slot.status = 'confirmed';
+  closeConfirm();
+  renderSlot(cid, st);
+  renderNotebook();
+  checkCardComplete(cid);
+  checkVictory();
+}
+function unlockSlot(cid, st){
+  if(!confirm('解除确认后，该结论将回到暂定状态，可重新修改。确定？')) return;
+  const slot = state.slots[cid][st];
+  slot.evidence.forEach(id => { const n = state.notes.find(x => x.id === id); if(n) n.cited = false; });
+  slot.evidence = [];
+  slot.status = 'tentative';
+  renderSlot(cid, st);
+  renderNotebook();
+  checkCardComplete(cid);
 }
 
 function selectOption(noteId){
   playClick();
   const note = state.notes.find(n => n.id === noteId);
   if(!note) return;
-  const { activeCard: cid, activeSlot: st } = state;
+  const cid = state.activeCard, st = state.activeSlot;
+  const slot = state.slots[cid][st];
 
-  /* 若该槽位原有内容，恢复原笔记的 used 状态 */
-  const prev = state.slots[cid][st];
-  if(prev){
-    const prevNote = state.notes.find(n => n.text === prev);
+  /* 若该槽位原有值，恢复原笔记的 used 状态 */
+  if(slot.value){
+    const prevNote = state.notes.find(n => n.text === slot.value && n.used);
     if(prevNote) prevNote.used = false;
   }
-
-  state.slots[cid][st] = note.text;
+  /* 暂定态：先清空证据引用（确认阶段才会写入） */
+  slot.evidence = [];
+  slot.value = note.text;
+  slot.status = 'tentative';
   note.used = true;
 
-  const btn = document.getElementById(`slot-${cid}-${st}`);
-  btn.querySelector('.slot-text').textContent = note.text;
-  btn.classList.add('filled');
-  btn.querySelector('.slot-icon').textContent = '✓';
-
   closePicker();
+  renderSlot(cid, st);
   renderNotebook();
   markTodoDone(3);
   checkCardComplete(cid);
-  checkVictory();
 }
 
 /* =========================================================
@@ -1489,14 +1705,15 @@ function isCardSolved(cid){
   const s = state.slots[cid];
   const a = ANSWERS[cid];
   for(const key in a){
-    if(!s[key] || !a[key].includes(s[key])) return false;
+    const slot = s[key];
+    if(!slot || slot.status !== 'confirmed') return false;
+    if(!a[key].values.includes(slot.value)) return false;
   }
   return true;
 }
 function checkCardComplete(cid){
-  if(isCardSolved(cid)){
-    document.getElementById(`card-${cid}`).classList.add('complete');
-  }
+  const card = document.getElementById(`card-${cid}`);
+  if(card) card.classList.toggle('complete', isCardSolved(cid));
   drawLines();
 }
 function checkVictory(){
@@ -1556,6 +1773,9 @@ function toast(msg){
 function init(){
   renderArchiveList();
   renderNotebook();
+  [0,1,2,3].forEach(cid => {
+    Object.keys(state.slots[cid]).forEach(st => renderSlot(cid, st));
+  });
   applyZoom();
   setTimeout(drawLines, 100);
   setTimeout(drawLines, 500);
