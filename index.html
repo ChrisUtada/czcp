@@ -292,6 +292,13 @@
   .person-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
   .person-fields .field-label{margin-bottom:3px}
   .person-fields .slot{padding:6px 8px;min-height:32px;font-size:11.5px}
+  .field-hint{
+    font-family:'Space Mono',monospace;font-size:9px;line-height:1;
+    width:16px;height:16px;padding:0;border-radius:50%;
+    border:1px solid #3a3a3a;background:#111;color:#6a6a6a;
+    cursor:pointer;flex:0 0 auto;transition:.15s;
+  }
+  .field-hint:hover{border-color:var(--white);color:var(--white)}
   .af-opt{
     font-family:'Space Mono',monospace;font-size:8px;color:var(--fg4);
     border:1px solid #333;border-radius:2px;padding:0 4px;margin-left:4px;
@@ -900,7 +907,8 @@
   .hint-head h2{font-size:13.5px;font-weight:900;color:var(--white);letter-spacing:.05em}
   .hint-head .hh-sub{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4);margin-top:3px}
   .hint-body{padding:14px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:9px}
-  .hint-row{background:#141414;border:1px solid var(--line2);border-radius:3px;padding:10px 12px}
+  .hint-row{background:#141414;border:1px solid var(--line2);border-radius:3px;padding:10px 12px;transition:border-color .3s,box-shadow .3s}
+  .hint-row.flash{border-color:var(--white);box-shadow:0 0 0 2px rgba(255,255,255,.18)}
   .hint-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .hint-slot{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--fg2);letter-spacing:.03em}
   .hint-lv{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4);margin-top:2px}
@@ -1143,7 +1151,9 @@
                 <div class="codename">老掌柜</div>
               </div>
               <div>
-                <div class="field-label"><span>身份 / ENTITY</span></div>
+                <div class="field-label"><span>身份 / ENTITY</span>
+                  <button class="field-hint" type="button" title="此栏提示" onclick="event.stopPropagation();openHintsFor('0.role')">?</button>
+                </div>
                 <div class="slot" id="slot-0-role" data-cid="0" data-st="role">
                   <div class="slot-main" onclick="openPicker(0,'role')">
                     <span class="slot-icon">＋</span>
@@ -1160,7 +1170,9 @@
             </div>
           </div>
           <div style="margin-top:12px">
-            <div class="field-label"><span>解剖 / 创伤异样</span></div>
+            <div class="field-label"><span>解剖 / 创伤异样</span>
+              <button class="field-hint" type="button" title="此栏提示" onclick="event.stopPropagation();openHintsFor('0.wound')">?</button>
+            </div>
                 <div class="slot" id="slot-0-wound" data-cid="0" data-st="wound">
                   <div class="slot-main" onclick="openPicker(0,'wound')">
                     <span class="slot-icon">＋</span>
@@ -1491,7 +1503,10 @@ const PERSON_SLOTS = [
 
 function slotBlockHTML(cid, st, label, ph, opt){
   return `<div>
-    <div class="field-label"><span>${label}${opt ? '<span class="af-opt">选填</span>' : ''}</span></div>
+    <div class="field-label">
+      <span>${label}${opt ? '<span class="af-opt">选填</span>' : ''}</span>
+      <button class="field-hint" type="button" title="此栏提示" onclick="event.stopPropagation();openHintsFor('${cid}.${st}')">?</button>
+    </div>
     <div class="slot" id="slot-${cid}-${st}" data-cid="${cid}" data-st="${st}">
       <div class="slot-main" onclick="openPicker(${cid},'${st}')">
         <span class="slot-icon">＋</span>
@@ -2311,10 +2326,32 @@ function evidenceCorresponds(cid, st, note){
   return ans.evidence.some(sub => note.text.includes(sub));
 }
 
+/* 栏目性质：填错时告诉玩家这一栏要的是哪一类事实（不泄露答案） */
+const FIELD_KIND = {
+  name: '人名',
+  post: '职衔（官称）',
+  join: '入船政的时间（年号或公元年份）',
+  died: '卒年或结局'
+};
+
+/* 形近/同音误写：与标准答案等长且仅一字之差（如「张佩伦」之于「张佩纶」） */
+function nearMissAnswer(cid, st, text){
+  const ans = ANSWERS[cid] && ANSWERS[cid][st];
+  if(!ans || !text) return false;
+  const t = text.replace(/\s+/g, '');
+  return ans.values.some(v => {
+    const a = v.replace(/\s+/g, '');
+    if(a.length !== t.length) return false;
+    let diff = 0;
+    for(let i = 0; i < a.length; i++) if(a[i] !== t[i]) diff++;
+    return diff === 1;
+  });
+}
+
 function openConfirm(cid, st){
   if(!ANSWERS[cid] || !ANSWERS[cid][st]){ toast('此栏仅供备查，无须引证确认。'); return; }
   const slot = state.slots[cid][st];
-  if(slot.status !== 'tentative'){ toast('请先填入暂定结论，再引用证据。'); return; }
+  if(slot.status !== 'tentative'){ toast('此栏还空着：先点格子，从笔记本里挑一条线索填进来，再来引证。'); return; }
   state.activeCard = cid; state.activeSlot = st;
   document.getElementById('confirmTitle').textContent = `引用证据 · 「${slotDisplayValue(cid, st)}」`;
   const body = document.getElementById('confirmBody');
@@ -2344,13 +2381,17 @@ function confirmSlot(){
   if(!ans){ toast('此栏仅供备查，无须引证确认。'); return; }
   if(!textMatchesAnswer(cid, st, slot.value)){
     state.failCount++; renderFailCount();
-    toast('查无实据，着即驳回：此结论不在卷宗所载之内。');
+    if(nearMissAnswer(cid, st, slot.value)){
+      toast('一字之差，驳回：名册里的写法与你填的略有出入，留意形近、同音之误。');
+    }else{
+      toast(`此栏要的是${FIELD_KIND[st] || '卷宗所载的具体事实'}，你选的线索不合。换一条再试。`);
+    }
     return;
   }
   const checks = Array.from(document.querySelectorAll('#confirmBody .evi-chk:checked'));
   if(checks.length === 0){
     state.failCount++; renderFailCount();
-    toast('须至少引用一条证据，方可确认结论。');
+    toast('还差一步：勾选一条能证明该结论的笔记，再点「确认结论」。');
     return;
   }
   const ids = checks.map(c => c.value);
@@ -2360,7 +2401,7 @@ function confirmSlot(){
   });
   if(!ok){
     state.failCount++; renderFailCount();
-    toast('所引证据与本结论无对应关系，驳回。');
+    toast('所勾的笔记没有直接记载此事，驳回：换一条写明了该事实的线索。');
     return;
   }
   slot.evidence.forEach(id => { const n = state.notes.find(x => x.id === id); if(n) n.cited = false; });
@@ -2733,6 +2774,22 @@ function openHints(){
   renderHints();
   document.getElementById('hintModal').classList.add('on');
 }
+
+/* 从某一栏的「?」进入：直接定位到该栏的提示行 */
+function openHintsFor(key){
+  if(state.finished){ toast('本案已结，无须提示。'); return; }
+  openHints();
+  const row = document.querySelector(`.hint-row[data-key="${key}"]`);
+  if(!row){
+    toast('此栏已确认，无须提示。');
+    return;
+  }
+  setTimeout(() => {
+    if(row.scrollIntoView) row.scrollIntoView({ block: 'center' });
+    row.classList.add('flash');
+    setTimeout(() => row.classList.remove('flash'), 1400);
+  }, 30);
+}
 function closeHints(){
   document.getElementById('hintModal').classList.remove('on');
 }
@@ -2760,7 +2817,7 @@ function renderHints(){
     const shown = arr.slice(0, lv).map((t, i) =>
       `<div class="hint-text on"><span class="rq" style="color:#8a7a5c">第${i+1}档 · </span>${t}</div>`).join('');
     const maxed = lv >= arr.length;
-    return `<div class="hint-row ${maxed ? 'maxed' : ''}">
+    return `<div class="hint-row ${maxed ? 'maxed' : ''}" data-key="${key}">
       <div class="hint-row-head">
         <div>
           <div class="hint-slot">${SLOT_LABEL[key] || key}</div>
