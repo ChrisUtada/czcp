@@ -708,12 +708,24 @@
   .picker-option:hover .po-src{color:#555}
   .picker-option.used{opacity:.35;cursor:not-allowed}
   .picker-option.used:hover{transform:none;background:#151515;color:var(--fg2)}
+  .picker-option.blocked{border-style:dashed;opacity:.5;cursor:not-allowed}
+  .picker-option.blocked:hover{transform:none;background:#151515;color:var(--fg2)}
+  .picker-option.blocked:hover .po-src{color:#555}
+  .picker-option .po-why{
+    font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.08em;
+    color:#7d6a4e;margin-top:1px;
+  }
   .picker-empty{
     padding:24px 18px;text-align:center;
     font-family:'Space Mono',monospace;font-size:12px;
     color:var(--fg4);line-height:1.7;
   }
   .picker-empty b{color:var(--seal)}
+  .picker-note{
+    margin-top:8px;padding:8px 10px;border-top:1px dashed var(--line2);
+    font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.04em;
+    color:#6f6252;line-height:1.7;
+  }
 
   /* 终局 */
   .final-modal{
@@ -2220,7 +2232,8 @@ function openPicker(cardId, slotType){
 
   const body = document.getElementById('pickerBody');
   const title = document.getElementById('pickerTitle');
-  title.textContent = `从笔记本选择线索 · ${SLOT_LABEL[cardId + '.' + slotType] || ('卡片' + cardId)}`;
+  const hint = shapeHint(slotType);
+  title.textContent = `从笔记本选择线索 · ${SLOT_LABEL[cardId + '.' + slotType] || ('卡片' + cardId)}${hint ? `（${hint}）` : ''}`;
   document.getElementById('pickerModal').classList.add('on');
 
   const current = slot.value;
@@ -2236,14 +2249,31 @@ function openPicker(cardId, slotType){
     return;
   }
 
+  const blockedCount = options.filter(n => checkSlotShape(slotType, n.text)).length;
   body.innerHTML = options.map(n => {
     const isCur = (n.text === current);
-    const cls = (n.used && !isCur) ? ' used' : '';
-    return `<button class="picker-option${cls}" onclick="selectOption('${n.id}')">
+    const why = checkSlotShape(slotType, n.text);
+    const cls = (n.used && !isCur) ? ' used' : (why ? ' blocked' : '');
+    const act = why ? `blockedNote('${n.id}')` : `selectOption('${n.id}')`;
+    return `<button class="picker-option${cls}" onclick="${act}">
       <span>${n.text}</span>
       <span class="po-src">${n.source} · ${n.time}</span>
+      ${why ? '<span class="po-why">不合本栏形态</span>' : ''}
     </button>`;
-  }).join('');
+  }).join('') + (blockedCount
+    ? `<div class="picker-note">虚线项与本栏形态不合，点它会说明缘由。</div>`
+    : '') + (blockedCount === options.length
+    ? `<div class="picker-note">笔记本里暂无合本栏形态的线索，回物证中另圈一截更贴题的原句。</div>`
+    : '');
+}
+
+/* 点了不合形态的线索：说清楚为什么不能用，不改变任何状态 */
+function blockedNote(noteId){
+  playClick();
+  const n = state.notes.find(x => x.id === noteId);
+  if(!n) return;
+  const why = checkSlotShape(state.activeSlot, n.text);
+  toast(why || '这条线索不合本栏。');
 }
 function closePicker(){
   document.getElementById('pickerModal').classList.remove('on');
@@ -2334,6 +2364,44 @@ const FIELD_KIND = {
   died: '卒年或结局'
 };
 
+/* 记年：年号纪年或公元年份（用于职位以外的时间栏） */
+const ERA_RE = /(?:顺治|康熙|雍正|乾隆|嘉庆|道光|咸丰|同治|光绪|宣统|民国)[元〇零一二三四五六七八九十]{0,3}年|1[5-9]\d{2}/;
+
+/* 栏目形态：限定字数与必备特征，挡住整段抄录与随手乱填。
+   只判「像不像这一栏要的东西」，不判对错——对错留给引证确认。 */
+const SHAPE_RULES = {
+  name:  { max: 4,  kind: '人名',      bad: '这一栏只填人名，所选线索夹带了别的字。请只圈住姓名再收藏。',
+           test: t => /^[\u4e00-\u9fa5]{2,4}$/.test(t) },
+  post:  { max: 16, kind: '职衔',      bad: '这一栏要的是官称，所选线索里查无职官名目。',
+           test: t => /大臣|管带|副将|提督|统带|统领|帮带|参将|游击|都司|守备|千总|把总|总兵|管驾|文案|军机|船政/.test(t) },
+  join:  { max: 12, kind: '入船政时间', bad: '这一栏要的是年份，所选线索里没有纪年。',
+           test: t => ERA_RE.test(t) },
+  died:  { max: 16, kind: '卒年或结局', bad: '这一栏要的是卒年或结局，所选线索里两者皆无。',
+           test: t => ERA_RE.test(t) || /阵亡|殉|卒|殁|斩|革|免|不详|病故|自尽|处决|罢/.test(t) },
+  role:  { max: 16, kind: '实体名目',   bad: '这一栏要的是实体名目，所选线索不像舰船之类。',
+           test: t => /舰|船|艇|舟|号/.test(t) },
+  wound: { max: 16, kind: '创痕描述',   bad: '这一栏要的是创痕所在与形貌，所选线索不合。',
+           test: t => /创|伤|破|洞|裂|痕|舷|弹|水线/.test(t) }
+};
+
+/* 返回 null 表示形态合格；否则返回驳回理由 */
+function checkSlotShape(st, text){
+  const r = SHAPE_RULES[st];
+  if(!r) return null;
+  const t = (text || '').replace(/\s+/g, '');
+  if(!t) return '所选线索为空。';
+  if(t.length > r.max) return `${r.kind}至多 ${r.max} 字，所选线索 ${t.length} 字，过长。请挑更短的一截原文。`;
+  if(!r.test(t)) return r.bad;
+  return null;
+}
+
+/* 选词器标题上标出本栏形态与字数上限 */
+function shapeHint(st){
+  const r = SHAPE_RULES[st];
+  if(!r) return '';
+  return st === 'name' ? `${r.kind} · 2–${r.max} 字` : `${r.kind} · ≤${r.max} 字`;
+}
+
 /* 形近/同音误写：与标准答案等长且仅一字之差（如「张佩伦」之于「张佩纶」） */
 function nearMissAnswer(cid, st, text){
   const ans = ANSWERS[cid] && ANSWERS[cid][st];
@@ -2352,6 +2420,8 @@ function openConfirm(cid, st){
   if(!ANSWERS[cid] || !ANSWERS[cid][st]){ toast('此栏仅供备查，无须引证确认。'); return; }
   const slot = state.slots[cid][st];
   if(slot.status !== 'tentative'){ toast('此栏还空着：先点格子，从笔记本里挑一条线索填进来，再来引证。'); return; }
+  const shapeWhy = checkSlotShape(st, slot.value);
+  if(shapeWhy){ toast(shapeWhy); return; }
   state.activeCard = cid; state.activeSlot = st;
   document.getElementById('confirmTitle').textContent = `引用证据 · 「${slotDisplayValue(cid, st)}」`;
   const body = document.getElementById('confirmBody');
@@ -2495,6 +2565,10 @@ function selectOption(noteId){
   if(!note) return;
   const cid = state.activeCard, st = state.activeSlot;
   const slot = state.slots[cid][st];
+
+  /* 形态把关：不合本栏字数/特征的线索不许入格 */
+  const why = checkSlotShape(st, note.text);
+  if(why){ toast(why); return; }
 
   /* 若该槽位原有值，恢复原笔记的 used 状态 */
   if(slot.value){
