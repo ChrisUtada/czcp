@@ -369,6 +369,36 @@
   .note.used .note-hint{color:#6b8a4a}
   .note.used .note-hint::before{content:'✓ ';font-weight:700}
 
+  /* 存疑标记：灰化但不删 */
+  .note.doubt{opacity:.72;border-left-color:#8a8a8a;filter:grayscale(.45)}
+  .note.doubt .note-text{color:#6a6a6a;text-decoration:line-through;text-decoration-color:rgba(0,0,0,.4)}
+  .note.doubt .note-hint{color:#8a7a62}
+  .note.doubt .note-hint::before{content:'? ';font-weight:700}
+
+  /* 笔记底部：提示 + 工具 */
+  .note-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:5px}
+  .note-foot .note-hint{margin-top:0}
+  .note-tools{display:flex;gap:4px;flex-shrink:0}
+  .note-tool{
+    width:19px;height:19px;display:flex;align-items:center;justify-content:center;
+    font-size:10px;line-height:1;padding:0;cursor:pointer;transition:.15s;
+    border:1px solid #b8a88a;background:transparent;color:#7a6a52;border-radius:2px;
+    font-family:'Space Mono',monospace;
+  }
+  .note-tool:hover{background:#7a6a52;color:#f3e9d6;border-color:#7a6a52}
+  .note-tool.flag.on{background:var(--seal);border-color:var(--seal);color:#f3e9d6}
+  .note-tool.del:hover{background:#a33;border-color:#a33;color:#fff}
+
+  /* 笔记来源筛选 */
+  .note-filter-row{margin-bottom:8px}
+  .note-filter-row select{
+    width:100%;padding:5px 8px;cursor:pointer;
+    background:#0c0c0c;color:var(--fg2);
+    border:1px solid var(--line2);border-radius:3px;
+    font-family:'Space Mono',monospace;font-size:10.5px;
+  }
+  .note-filter-row select:focus{outline:none;border-color:var(--white);color:var(--white)}
+
   .archive-btn{
     width:100%;padding:13px;background:var(--white);color:#000;
     font-weight:900;font-size:13px;letter-spacing:.08em;
@@ -1038,6 +1068,11 @@
         <span>NOTEBOOK · 调查笔记本</span>
         <span class="count" id="noteCount">0</span>
       </div>
+      <div class="note-filter-row">
+        <select id="noteFilter" onchange="renderNotebook()">
+          <option value="">全部来源</option>
+        </select>
+      </div>
       <div class="notebook" id="notebook">
         <div class="empty-hint">
           <span class="arrow">✒</span>
@@ -1229,6 +1264,7 @@ const DOCS = [
       <p class="no-indent"><strong>朝廷上谕摘录：</strong>“法夷游弋马江，战和未定。切不可先发制人，致招开端。”</p>
       <p>会办福建海防大臣 张佩纶 下达严令：各舰原锚不动，违者按军法处决。</p>
       <p>【调查提示】张佩纶以朝廷会办大臣之尊，严禁战舰开火，致使“老掌柜”陷入被动受击境地。</p>
+      <p>另据营务处札记，会办军务 <strong>张佩伦</strong> 于前一日过江巡视，旋即返省，与本案无涉。</p>
     `
   },
   {
@@ -1238,6 +1274,7 @@ const DOCS = [
     body: `
       <p class="no-indent"><strong>幸存营兵证言：</strong>“战前老掌柜请移锚罗星塔，水师提督 张成 怒斥不许。”</p>
       <p>及至未时炮响，提督 福建水师提督 张成见形势大乱，未登舰指挥即仓皇逃往岸上避难。</p>
+      <p>同营守备 <strong>张城</strong> 供称，当夜未见提督登舰，名册另录，待核。</p>
     `
   },
   {
@@ -1247,6 +1284,7 @@ const DOCS = [
     body: `
       <p class="no-indent"><strong>损管日志残页：</strong>“敌鱼雷艇逼近右舷，旗舰管带 麦元良 屹立飞檐。”</p>
       <p>管带 扬武号管带 麦元良与老掌柜死守尾炮，命中法舰后同沉江底。</p>
+      <p>帮带 <strong>麦元亮</strong> 于战前调赴岸防，未在舰上，其名与管带相近，勿混。</p>
     `
   },
   {
@@ -1258,6 +1296,7 @@ const DOCS = [
       <p>一、并非血肉之躯，实为 闽江第一号木胁铁壳舰。</p>
       <p>二、右舷水下发现 右舷水下贯穿破洞，系受鱼雷击爆所致。</p>
       <p>三、其职务兼任 福建水师旗舰。</p>
+      <p>四、另据船政旧档，此舰或记作 <strong>闽江二号铁肋舰</strong>，与打捞实物勘验不合，存疑备考。</p>
     `
   }
 ];
@@ -1413,33 +1452,10 @@ function closeArchive(){
 let ctxSelected = '';
 const ctxMenu = document.getElementById('ctxMenu');
 
-/* 归一化：把自由选中的文字对齐到已知答案，提升命中率 */
-function normalizeClue(raw){
-  const t = (raw||'').replace(/\s+/g,'').trim();
-  if(!t) return (raw||'').trim();
-  for(const cid in ANSWERS){
-    for(const k in ANSWERS[cid]){
-      for(const v of ANSWERS[cid][k].values){
-        if(t === v) return v;
-      }
-    }
-  }
-  const all = [];
-  for(const cid in ANSWERS){
-    for(const k in ANSWERS[cid]){
-      for(const v of ANSWERS[cid][k].values) all.push(v);
-    }
-  }
-  all.sort((x,y)=>y.length-x.length);
-  for(const v of all){
-    if(t.includes(v)) return v;
-  }
-  return (raw||'').trim();
-}
-
-/* 收藏选中的文字 */
+/* 收藏选中的文字（原样入册，不再自动对齐答案） */
 function collectSelection(raw){
-  const clue = normalizeClue(raw);
+  const clue = (raw || '').replace(/\s+/g, ' ').trim();
+  if(!clue) return;
   if(state.notes.some(n => n.text === clue)){
     toast('此条信息已在笔记本中。');
     return;
@@ -1452,7 +1468,8 @@ function collectSelection(raw){
     source: d ? d.title : '案卷标注',
     time: d ? d.date.split('·').pop().trim() : '',
     used: false,
-    cited: false
+    cited: false,
+    flag: null
   };
   state.notes.push(note);
   renderNotebook();
@@ -1520,7 +1537,21 @@ function closeSearch(){
    ========================================================= */
 function renderNotebook(){
   const nb = document.getElementById('notebook');
-  document.getElementById('noteCount').textContent = state.notes.length;
+  const sel = document.getElementById('noteFilter');
+
+  /* 来源筛选下拉：随笔记来源动态重建，保留当前选择 */
+  if(sel){
+    const sources = [...new Set(state.notes.map(n => n.source))];
+    const keep = sources.includes(sel.value) ? sel.value : '';
+    sel.innerHTML = '<option value="">全部来源</option>' +
+      sources.map(s => `<option value="${s}">${s}</option>`).join('');
+    sel.value = keep;
+  }
+  const filter = sel ? sel.value : '';
+  const list = filter ? state.notes.filter(n => n.source === filter) : state.notes;
+
+  const cntEl = document.getElementById('noteCount');
+  cntEl.textContent = filter ? `${list.length}/${state.notes.length}` : state.notes.length;
 
   if(state.notes.length === 0){
     nb.innerHTML = `
@@ -1532,25 +1563,66 @@ function renderNotebook(){
       </div>`;
     return;
   }
+  if(list.length === 0){
+    nb.innerHTML = `<div class="empty-hint">该来源下暂无笔记。</div>`;
+    return;
+  }
 
-  nb.innerHTML = state.notes.map(n => `
-    <div class="note ${n.used ? 'used' : ''} ${n.cited ? 'cited' : ''}" data-id="${n.id}">
+  nb.innerHTML = list.map(n => {
+    const cls = [n.used ? 'used' : '', n.cited ? 'cited' : '', n.flag === 'doubt' ? 'doubt' : '']
+      .filter(Boolean).join(' ');
+    const hint = n.used ? '已归位'
+      : (n.cited ? '已引用'
+        : (n.flag === 'doubt' ? '存疑 · 待核' : '点击归位至关系图'));
+    return `
+    <div class="note ${cls}" data-id="${n.id}">
       <div class="note-head">
         <span class="note-source">${n.source}</span>
         <span class="note-time">${n.time}</span>
       </div>
       <div class="note-text"><span class="underline">${n.text}</span></div>
-      <div class="note-hint">${n.used ? '已归位' : (n.cited ? '已引用' : '点击归位至关系图')}</div>
-    </div>
-  `).join('');
+      <div class="note-foot">
+        <span class="note-hint">${hint}</span>
+        <span class="note-tools">
+          <button class="note-tool flag ${n.flag === 'doubt' ? 'on' : ''}" type="button" title="标记存疑 / 无用" onclick="event.stopPropagation();toggleNoteFlag('${n.id}')">?</button>
+          <button class="note-tool del" type="button" title="删除此线索" onclick="event.stopPropagation();deleteNote('${n.id}')">🗑</button>
+        </span>
+      </div>
+    </div>`;
+  }).join('');
 
-  /* 笔记本内点击 = 打开归位提示 */
+  /* 笔记本内点击 = 归位提示（工具按钮除外） */
   nb.querySelectorAll('.note:not(.used)').forEach(el => {
-    el.onclick = () => {
+    el.onclick = (ev) => {
+      if(ev.target.closest('.note-tools')) return;
       playClick();
       toast('请在关系图中点击空槽位，再从笔记本中选择此线索。');
     };
   });
+}
+
+/* 删除笔记（二次确认；已归位/已引用不可删，避免与槽位脱钩） */
+function deleteNote(id){
+  const n = state.notes.find(x => x.id === id);
+  if(!n) return;
+  if(n.used || n.cited){
+    toast('该线索已归位或已被引用，请先撤回 / 解除相关结论。');
+    return;
+  }
+  openMiniConfirm('删除线索', `确定删除「${n.text}」？此操作不可撤销。`, () => {
+    state.notes = state.notes.filter(x => x.id !== id);
+    renderNotebook();
+    toast('已删除该条线索。');
+  });
+}
+
+/* 标记存疑 / 无用：灰化但不删除 */
+function toggleNoteFlag(id){
+  const n = state.notes.find(x => x.id === id);
+  if(!n) return;
+  n.flag = (n.flag === 'doubt') ? null : 'doubt';
+  renderNotebook();
+  toast(n.flag === 'doubt' ? '已标记为存疑，可随时取消。' : '已取消存疑标记。');
 }
 
 /* =========================================================
@@ -1608,6 +1680,19 @@ const SLOT_PLACEHOLDER = {
   3: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' }
 };
 
+/* 卡面展示值：笔记存原文，若能命中答案则展示标准关键词，否则展示原文 */
+function slotDisplayValue(cid, st){
+  const slot = state.slots[cid][st];
+  if(!slot.value) return SLOT_PLACEHOLDER[cid][st];
+  const ans = ANSWERS[cid] && ANSWERS[cid][st];
+  if(ans){
+    const t = slot.value.replace(/\s+/g, '');
+    const hit = ans.values.find(v => t.includes(v.replace(/\s+/g, '')));
+    if(hit) return hit;
+  }
+  return slot.value;
+}
+
 function renderSlot(cid, st){
   const slot = state.slots[cid][st];
   const el = document.getElementById(`slot-${cid}-${st}`);
@@ -1628,7 +1713,7 @@ function renderSlot(cid, st){
     actUnlock.style.display = 'none';
   } else if(slot.status === 'tentative'){
     el.classList.add('tentative');
-    text.textContent = slot.value;
+    text.textContent = slotDisplayValue(cid, st);
     icon.textContent = '?';
     badge.style.display = '';
     badge.textContent = '暂定';
@@ -1637,7 +1722,7 @@ function renderSlot(cid, st){
     actUnlock.style.display = 'none';
   } else if(slot.status === 'confirmed'){
     el.classList.add('confirmed');
-    text.textContent = slot.value;
+    text.textContent = slotDisplayValue(cid, st);
     icon.textContent = '✓';
     badge.style.display = '';
     badge.textContent = '已确认';
@@ -1647,16 +1732,26 @@ function renderSlot(cid, st){
   }
 }
 
+/* 反向匹配：笔记原文是否「包含」该槽位答案关键词（保留模糊命中，主动权在玩家） */
+function textMatchesAnswer(cid, st, text){
+  const ans = ANSWERS[cid] && ANSWERS[cid][st];
+  if(!ans) return null;                       // 该槽位仅备查，不参与判据
+  const t = (text || '').replace(/\s+/g, '');
+  return ans.values.some(v => t.includes(v.replace(/\s+/g, '')));
+}
+
 function evidenceCorresponds(cid, st, note){
-  const ev = ANSWERS[cid][st].evidence;
-  return ev.some(sub => note.text.includes(sub));
+  const ans = ANSWERS[cid] && ANSWERS[cid][st];
+  if(!ans) return false;
+  return ans.evidence.some(sub => note.text.includes(sub));
 }
 
 function openConfirm(cid, st){
+  if(!ANSWERS[cid] || !ANSWERS[cid][st]){ toast('此栏仅供备查，无须引证确认。'); return; }
   const slot = state.slots[cid][st];
   if(slot.status !== 'tentative'){ toast('请先填入暂定结论，再引用证据。'); return; }
   state.activeCard = cid; state.activeSlot = st;
-  document.getElementById('confirmTitle').textContent = `引用证据 · 「${slot.value}」`;
+  document.getElementById('confirmTitle').textContent = `引用证据 · 「${slotDisplayValue(cid, st)}」`;
   const body = document.getElementById('confirmBody');
   if(state.notes.length === 0){
     body.innerHTML = `<div class="picker-empty">笔记本空空如也，无从引用证据。</div>`;
@@ -1680,8 +1775,9 @@ function confirmSlot(){
   const cid = state.activeCard, st = state.activeSlot;
   const slot = state.slots[cid][st];
   if(!slot || slot.status !== 'tentative'){ closeConfirm(); return; }
-  const ans = ANSWERS[cid][st];
-  if(!ans.values.includes(slot.value)){
+  const ans = ANSWERS[cid] && ANSWERS[cid][st];
+  if(!ans){ toast('此栏仅供备查，无须引证确认。'); return; }
+  if(!textMatchesAnswer(cid, st, slot.value)){
     state.failCount++; renderFailCount();
     toast('查无实据，着即驳回：此结论不在卷宗所载之内。');
     return;
@@ -1715,7 +1811,7 @@ function confirmSlot(){
 function unlockSlot(cid, st){
   openMiniConfirm(
     '解除确认',
-    `解除「${state.slots[cid][st].value}」的确认后，该结论将回到暂定状态，可重新修改。确定？`,
+    `解除「${slotDisplayValue(cid, st)}」的确认后，该结论将回到暂定状态，可重新修改。确定？`,
     () => {
       const slot = state.slots[cid][st];
       slot.evidence.forEach(id => { const n = state.notes.find(x => x.id === id); if(n) n.cited = false; });
@@ -1811,7 +1907,7 @@ function isCardSolved(cid){
   for(const key in a){
     const slot = s[key];
     if(!slot || slot.status !== 'confirmed') return false;
-    if(!a[key].values.includes(slot.value)) return false;
+    if(!textMatchesAnswer(cid, key, slot.value)) return false;
   }
   return true;
 }
