@@ -242,13 +242,30 @@
   .note.cited{border-left:3px solid #b8860b}
   .note.cited .note-hint{color:#e8c970}
 
-  .person-row{display:flex;gap:10px;margin-bottom:10px}
+  .person-row{display:flex;gap:11px;margin-bottom:12px;align-items:center}
   .person-photo{
-    width:62px;height:78px;background:#050505;border:1px solid var(--line2);
+    width:74px;height:96px;background:#050505;border:1px solid var(--line2);
     border-radius:3px;display:flex;align-items:center;justify-content:center;
     font-family:'Space Mono',monospace;font-size:20px;color:#444;flex-shrink:0;
   }
-  .person-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+  .person-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px;justify-content:center}
+  .person-meta{
+    display:flex;flex-direction:column;gap:9px;
+    border-top:1px dashed var(--line2);padding-top:10px;
+  }
+  .af-val{
+    font-size:11.5px;line-height:1.6;color:var(--fg2);
+    letter-spacing:.02em;word-break:break-word;white-space:pre-line;
+  }
+  .af-val.pending{
+    font-family:'Space Mono',monospace;font-size:9.5px;
+    color:#4e4e4e;letter-spacing:.1em;
+  }
+  .af-opt{
+    font-family:'Space Mono',monospace;font-size:8px;color:var(--fg4);
+    border:1px solid #333;border-radius:2px;padding:0 4px;margin-left:4px;
+    font-weight:400;letter-spacing:.05em;
+  }
 
   .card-footer{
     border-top:1px solid var(--line);padding:8px 14px 10px;
@@ -1129,7 +1146,7 @@
             </div>
             <div class="person-fields">
               <div>
-                <div class="field-label"><span>真实姓名</span></div>
+                <div class="field-label"><span>真实姓名 / NAME</span></div>
                 <div class="slot" id="slot-1-name" data-cid="1" data-st="name">
                   <div class="slot-main" onclick="openPicker(1,'name')">
                     <span class="slot-icon">＋</span>
@@ -1145,10 +1162,20 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="label">已知指令</span>
-          <span>“严禁开炮，擅动者论处”</span>
+          <div class="person-meta">
+            <div>
+              <div class="field-label"><span>职位 / POST</span></div>
+              <div class="af-val pending" id="af-1-post">〔待身份确认〕</div>
+            </div>
+            <div>
+              <div class="field-label"><span>入船政 / JOINED</span></div>
+              <div class="af-val pending" id="af-1-join">〔待身份确认〕</div>
+            </div>
+            <div>
+              <div class="field-label"><span>卒于 / DIED<span class="af-opt">选填</span></span></div>
+              <div class="af-val pending" id="af-1-died">〔待身份确认〕</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1166,7 +1193,7 @@
             </div>
             <div class="person-fields">
               <div>
-                <div class="field-label"><span>真实姓名</span></div>
+                <div class="field-label"><span>真实姓名 / NAME</span></div>
                 <div class="slot" id="slot-2-name" data-cid="2" data-st="name">
                   <div class="slot-main" onclick="openPicker(2,'name')">
                     <span class="slot-icon">＋</span>
@@ -1182,10 +1209,20 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="label">已知行动</span>
-          <span>开战后率先弃舰离场</span>
+          <div class="person-meta">
+            <div>
+              <div class="field-label"><span>职位 / POST</span></div>
+              <div class="af-val pending" id="af-2-post">〔待身份确认〕</div>
+            </div>
+            <div>
+              <div class="field-label"><span>入船政 / JOINED</span></div>
+              <div class="af-val pending" id="af-2-join">〔待身份确认〕</div>
+            </div>
+            <div>
+              <div class="field-label"><span>卒于 / DIED<span class="af-opt">选填</span></span></div>
+              <div class="af-val pending" id="af-2-died">〔待身份确认〕</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1203,7 +1240,7 @@
             </div>
             <div class="person-fields">
               <div>
-                <div class="field-label"><span>真实姓名</span></div>
+                <div class="field-label"><span>真实姓名 / NAME</span></div>
                 <div class="slot" id="slot-3-name" data-cid="3" data-st="name">
                   <div class="slot-main" onclick="openPicker(3,'name')">
                     <span class="slot-icon">＋</span>
@@ -1219,10 +1256,20 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="label">绝唱口令</span>
-          <span>“向敌发射尾炮，死战到底！”</span>
+          <div class="person-meta">
+            <div>
+              <div class="field-label"><span>职位 / POST</span></div>
+              <div class="af-val pending" id="af-3-post">〔待身份确认〕</div>
+            </div>
+            <div>
+              <div class="field-label"><span>入船政 / JOINED</span></div>
+              <div class="af-val pending" id="af-3-join">〔待身份确认〕</div>
+            </div>
+            <div>
+              <div class="field-label"><span>卒于 / DIED<span class="af-opt">选填</span></span></div>
+              <div class="af-val pending" id="af-3-died">〔待身份确认〕</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1499,6 +1546,25 @@ const ANSWERS = {
   1: { name: { values: ['张佩纶'], evidence: ['张佩纶','会办福建海防','会办大臣'] } },
   2: { name: { values: ['张成'],   evidence: ['张成','水师提督'] } },
   3: { name: { values: ['麦元良'], evidence: ['麦元良','旗舰管带'] } }
+};
+
+/* 人物档案：身份确认后由船政旧档补录（不参与判据，仅作档案完整度） */
+const PERSON_FILES = {
+  1: {
+    post: '会办福建海防大臣 · 兼署船政大臣\n三品卿衔',
+    join: '光绪十年（1884）\n到闽会办 · 兼署船政大臣',
+    died: '光绪二十九年（1903）'
+  },
+  2: {
+    post: '闽安镇副将（从二品）\n统带福建水师',
+    join: '同治六年（1867）\n考入船政后学堂驾驶班',
+    died: '不详\n战后定斩监候，解刑部监禁'
+  },
+  3: {
+    post: '扬武号管带（游击 · 从三品）\n福建水师旗舰',
+    join: '光绪二年（1876）\n船政后学堂驾驶班',
+    died: '光绪十年七月初三（1884）\n马江阵亡'
+  }
 };
 
 /* 九舰 */
@@ -2440,6 +2506,20 @@ function checkCardComplete(cid){
   const card = document.getElementById(`card-${cid}`);
   if(card) card.classList.toggle('complete', isCardSolved(cid));
   renderPhoto(cid);
+  renderPersonFile(cid);
+}
+
+/* 人物档案补录：姓名一经确认，职位 / 入船政 / 卒于 由旧档填入 */
+function renderPersonFile(cid){
+  const f = PERSON_FILES[cid];
+  if(!f) return;
+  const solved = isCardSolved(cid);
+  [['post', f.post], ['join', f.join], ['died', f.died]].forEach(([key, val]) => {
+    const el = document.getElementById(`af-${cid}-${key}`);
+    if(!el) return;
+    el.textContent = solved ? val : '〔待身份确认〕';
+    el.classList.toggle('pending', !solved);
+  });
 }
 
 /* 阶段9 · 肖像显影 */
@@ -2790,6 +2870,7 @@ function init(){
   [0,1,2,3].forEach(cid => {
     Object.keys(state.slots[cid]).forEach(st => renderSlot(cid, st));
     renderPhoto(cid);
+    renderPersonFile(cid);
   });
   renderFailCount();
   renderProgress();
