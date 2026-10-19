@@ -793,6 +793,283 @@
     max-width:80vw;text-align:center;
   }
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* =========================================================
+     阶段5 · 全局检索
+     ========================================================= */
+  .search-input-row{display:flex;gap:8px;padding:14px 18px 0}
+  .search-input{
+    flex:1;min-width:0;background:#151515;border:1.5px solid var(--line2);
+    border-radius:3px;padding:9px 12px;color:var(--fg);
+    font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.03em;
+  }
+  .search-input:focus{outline:none;border-color:var(--white);background:#1d1d1d}
+  .search-input::placeholder{color:var(--fg4)}
+  .search-tip{
+    padding:26px 20px;color:var(--fg3);font-size:11.5px;line-height:1.9;
+    text-align:center;font-family:'Space Mono',monospace;
+  }
+  .si-tag{
+    display:inline-block;font-family:'Space Mono',monospace;font-size:9px;
+    padding:1px 6px;border-radius:2px;background:#caa23a;color:#1a1a1a;
+    margin-left:6px;vertical-align:middle;letter-spacing:.05em;font-weight:700;
+  }
+
+  /* =========================================================
+     阶段8 · 进度（数据驱动）
+     ========================================================= */
+  .prog-list{display:flex;flex-direction:column;gap:9px}
+  .prog-row{display:flex;flex-direction:column;gap:5px}
+  .prog-top{
+    display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+    font-family:'Space Mono',monospace;font-size:10.5px;
+    color:var(--fg3);letter-spacing:.04em;
+  }
+  .prog-top b{color:var(--fg2);font-weight:700;font-size:11px}
+  .prog-row.done .prog-top b{color:#86e886}
+  .prog-row.done .prog-top{color:var(--fg2)}
+  .prog-bar{height:4px;background:#171717;border-radius:2px;overflow:hidden}
+  .prog-fill{height:100%;width:0;background:#5a5a5a;transition:width .55s ease}
+  .prog-row.done .prog-fill{background:#86e886}
+  .prog-foot{
+    margin-top:10px;padding-top:8px;border-top:1px dashed var(--line2);
+    font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4);line-height:1.7;
+  }
+
+  /* =========================================================
+     阶段9 · 肖像显影
+     ========================================================= */
+  .person-photo,.target-photo{position:relative;overflow:hidden}
+  .person-photo .ph-q{position:relative;z-index:3;transition:opacity .6s,transform .6s}
+  .person-photo.revealed{border-color:#6a6a6a;background:#0c0c0c}
+  .person-photo.revealed .ph-q{opacity:0;transform:scale(1.5)}
+  .target-photo .q,.target-photo .lbl{position:relative;z-index:3;transition:opacity .7s}
+  .target-photo.revealed{border-color:#6a6a6a;background:#0a0a0a}
+  .target-photo.revealed .q,.target-photo.revealed .lbl{opacity:0}
+  .ph-art{position:absolute;inset:0;opacity:0;transition:opacity 1s ease .15s;z-index:1}
+  .person-photo.revealed .ph-art,.target-photo.revealed .ph-art{opacity:1}
+  .ph-head{
+    position:absolute;left:50%;top:11%;width:36%;padding-bottom:36%;
+    transform:translateX(-50%);border-radius:50%;
+    background:radial-gradient(circle at 40% 32%,#b4b4b4,#6f6f6f 72%,#4a4a4a);
+  }
+  .ph-body{
+    position:absolute;left:6%;right:6%;bottom:0;height:44%;
+    background:linear-gradient(#8a8a8a,#5c5c5c);
+    border-radius:50% 50% 0 0/62% 62% 0 0;
+  }
+  .ph-lbl{
+    position:absolute;left:0;right:0;bottom:4px;text-align:center;
+    font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.06em;
+    color:#d6d6d6;text-shadow:0 1px 2px #000;z-index:2;
+  }
+  .ph-hull{
+    position:absolute;left:10%;right:10%;bottom:20%;height:22%;
+    background:linear-gradient(#9c9c9c,#5e5e5e);
+    clip-path:polygon(0 0,100% 0,86% 100%,14% 100%);
+  }
+  .ph-mast{position:absolute;left:50%;bottom:42%;width:2px;height:34%;background:#9a9a9a;transform:translateX(-1px)}
+  .ph-sail{
+    position:absolute;left:calc(50% - 21px);bottom:44%;width:42px;height:24%;
+    background:linear-gradient(160deg,rgba(210,210,210,.7),rgba(120,120,120,.35));
+    clip-path:polygon(0 0,100% 10%,100% 100%,0 90%);
+  }
+  .ph-wake{
+    position:absolute;left:12%;right:12%;bottom:15%;height:2px;
+    background:linear-gradient(90deg,transparent,#777,transparent);
+  }
+
+  /* =========================================================
+     阶段10 · 提示
+     ========================================================= */
+  .hint-panel{
+    width:100%;max-width:640px;max-height:86vh;display:flex;flex-direction:column;
+    background:#0a0a0a;border:2px solid var(--white);border-radius:5px;
+    box-shadow:8px 8px 0 0 rgba(255,255,255,.2);animation:modalIn .18s ease-out;
+  }
+  .hint-head{
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .hint-head h2{font-size:13.5px;font-weight:900;color:var(--white);letter-spacing:.05em}
+  .hint-head .hh-sub{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4);margin-top:3px}
+  .hint-body{padding:14px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:9px}
+  .hint-row{background:#141414;border:1px solid var(--line2);border-radius:3px;padding:10px 12px}
+  .hint-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .hint-slot{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--fg2);letter-spacing:.03em}
+  .hint-lv{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4);margin-top:2px}
+  .hint-text{
+    margin-top:9px;font-size:12px;line-height:1.8;color:#dccfa6;
+    font-family:'Noto Serif SC',serif;border-left:2px solid #caa23a;
+    padding-left:9px;display:none;
+  }
+  .hint-text.on{display:block}
+  .hint-row.maxed .hint-text{color:#c9a0a0;border-left-color:#8a2b25}
+  .btn-hint{
+    font-family:'Space Mono',monospace;font-size:10px;padding:4px 11px;
+    border:1px solid #caa23a;color:#e8c970;background:transparent;
+    border-radius:3px;cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .btn-hint:hover{background:#caa23a;color:#000}
+  .btn-hint.off{border-color:#3a3a3a;color:#666;cursor:default}
+  .btn-hint.off:hover{background:transparent;color:#666}
+  .hint-empty{padding:22px 16px;text-align:center;color:var(--fg3);font-size:11.5px;line-height:1.9}
+
+  /* =========================================================
+     阶段7 · 结案报告（纸张）
+     ========================================================= */
+  .report-panel{
+    width:100%;max-width:800px;max-height:88vh;display:flex;flex-direction:column;
+    background:var(--paper);color:var(--paper-ink);border-radius:3px;
+    box-shadow:10px 10px 0 0 rgba(255,255,255,.18);
+    animation:modalIn .22s ease-out;position:relative;
+  }
+  .report-head{padding:18px 26px 12px;border-bottom:2px solid #2b2620;position:relative}
+  .report-head h2{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:900;letter-spacing:.12em}
+  .report-meta{font-family:'Space Mono',monospace;font-size:10px;color:#6b5f4b;margin-top:6px;letter-spacing:.05em}
+  .report-seal{
+    position:absolute;right:22px;top:14px;width:66px;height:66px;
+    border:2px solid var(--seal);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    color:var(--seal);font-family:'Noto Serif SC',serif;font-size:11.5px;
+    font-weight:900;line-height:1.25;transform:rotate(-12deg);opacity:.72;
+    letter-spacing:.06em;
+  }
+  .report-body{padding:16px 26px;overflow-y:auto;display:flex;flex-direction:column;gap:13px}
+  .report-row{border-left:3px solid var(--seal);padding:1px 0 1px 12px}
+  .report-q{font-family:'Noto Serif SC',serif;font-size:13.5px;font-weight:700;margin-bottom:4px;color:#3a332a}
+  .report-a{font-size:13.5px;font-weight:900;color:var(--seal);letter-spacing:.05em}
+  .report-ev{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+  .report-ev div{font-size:11.5px;color:#4a4234;line-height:1.55}
+  .report-ev .rq{font-family:'Space Mono',monospace;font-size:9px;color:#8a7a5c;margin-right:5px}
+  .report-stats{
+    display:flex;gap:20px;flex-wrap:wrap;border-top:1px dashed #a89a7c;
+    padding-top:12px;margin-top:3px;font-family:'Space Mono',monospace;
+    font-size:11px;color:#5a5142;
+  }
+  .report-stats b{color:var(--seal)}
+  .report-foot{
+    padding:12px 26px 18px;border-top:2px solid #2b2620;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .report-foot .btn-ghost{border-color:#8a7a5c;color:#5a5142}
+  .report-foot .btn-ghost:hover{border-color:#2b2620;color:#2b2620}
+  .btn-report{
+    font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+    padding:9px 22px;background:var(--seal);color:#fff;
+    border:1px solid var(--seal);border-radius:3px;letter-spacing:.08em;cursor:pointer;
+  }
+  .btn-report:hover{background:var(--seal2)}
+
+  /* =========================================================
+     阶段11 · 设置 / 全屏笔记 / 移动端 / 选区操作条
+     ========================================================= */
+  .set-panel{
+    width:100%;max-width:460px;background:#0a0a0a;border:2px solid var(--white);
+    border-radius:5px;box-shadow:8px 8px 0 0 rgba(255,255,255,.2);
+    animation:modalIn .18s ease-out;
+  }
+  .set-head{
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .set-head h2{font-size:13.5px;font-weight:900;color:var(--white);letter-spacing:.05em}
+  .set-body{padding:4px 18px 16px;display:flex;flex-direction:column}
+  .set-row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 0;border-bottom:1px solid var(--line);
+  }
+  .set-row:last-child{border-bottom:none}
+  .set-row .sr-label{font-size:12.5px;color:var(--fg2);display:flex;flex-direction:column;gap:3px}
+  .set-row .sr-sub{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4)}
+  .set-btn{
+    font-family:'Space Mono',monospace;font-size:10.5px;padding:6px 13px;
+    border:1px solid var(--line3);border-radius:3px;color:var(--fg2);
+    background:transparent;cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .set-btn:hover{border-color:var(--white);color:var(--white)}
+  .set-btn.danger{border-color:#7a3a34;color:#d99}
+  .set-btn.danger:hover{background:#7a3a34;color:#fff;border-color:#7a3a34}
+
+  .nb-full{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:120;display:none;padding:22px;overflow:auto}
+  .nb-full.on{display:block}
+  .nb-full-panel{
+    max-width:1060px;margin:0 auto;background:#0c0c0c;
+    border:2px solid var(--white);border-radius:4px;padding:18px 20px;
+    box-shadow:8px 8px 0 0 rgba(255,255,255,.18);
+  }
+  .nb-full-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;
+  }
+  .nb-full-head h2{font-size:14px;font-weight:900;color:var(--white);letter-spacing:.06em}
+  .nb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+  .nb-grid .note{margin-bottom:0}
+
+  .mobile-tabs{display:none;flex-shrink:0;border-bottom:2px solid var(--line);background:#050505}
+  .mobile-tabs button{
+    flex:1;padding:11px 4px;font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--fg3);border-bottom:2px solid transparent;letter-spacing:.04em;
+  }
+  .mobile-tabs button.on{color:var(--white);border-bottom-color:var(--white);background:#121212}
+
+  .sel-bar{
+    position:fixed;z-index:210;display:none;gap:4px;background:#111;
+    border:1.5px solid var(--line3);border-radius:3px;padding:4px;
+    box-shadow:0 6px 22px rgba(0,0,0,.7);
+  }
+  .sel-bar.on{display:flex}
+  .sel-bar button{
+    font-family:'Space Mono',monospace;font-size:10.5px;padding:5px 10px;
+    color:var(--fg2);border-radius:2px;white-space:nowrap;
+  }
+  .sel-bar button:hover{background:var(--white);color:#000}
+
+  .sec-btn{
+    font-family:'Space Mono',monospace;font-size:9.5px;padding:3px 8px;
+    border:1px solid var(--line3);border-radius:2px;color:var(--fg2);cursor:pointer;
+    transition:.15s;
+  }
+  .sec-btn:hover{border-color:var(--white);color:var(--white)}
+
+  .chapter-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;justify-content:center}
+  .final-foot{flex-wrap:wrap}
+  .final-foot .chapter-row{flex-basis:100%;margin-top:4px}
+  .btn-final.ghost{background:transparent;color:var(--white)}
+  .btn-final.ghost:hover{background:#1c1c1c}
+  .btn-chapter{
+    font-family:'Space Mono',monospace;font-size:10.5px;padding:7px 13px;
+    border:1px solid #444;color:#666;border-radius:3px;background:transparent;
+    cursor:not-allowed;
+  }
+  .arch-item.flash{animation:archFlash .9s ease}
+  @keyframes archFlash{0%,100%{background:transparent}32%{background:#2a2418}}
+
+  /* 弹窗层级：报告/设置/提示需高于终局页，二次确认最高 */
+  #hintModal,#reportModal,#settingsModal{z-index:260}
+  #miniConfirm{z-index:320}
+  .nb-full{z-index:270}
+
+  @media(max-width:900px){
+    .mobile-tabs{display:flex}
+    .archive-list{display:none;width:100%;border-right:none}
+    .sidebar{display:none;width:100%;border-left:none}
+    body[data-pane="list"]  .archive-list{display:block}
+    body[data-pane="notes"] .sidebar{display:flex}
+    .viewport{display:none}
+    body[data-pane="canvas"] .viewport{display:block}
+    .canvas{transform-origin:top left}
+    .topbar{padding:0 10px;gap:8px}
+    .sys-meta{display:none}
+    .notebook{max-height:none}
+  }
+  @media(max-width:640px){
+    .title-banner{display:none}
+    .report-head h2{font-size:15px}
+    .report-seal{width:52px;height:52px;font-size:9.5px;right:14px;top:10px}
+    .report-body,.report-head,.report-foot{padding-left:16px;padding-right:16px}
+    .nb-full{padding:10px}
+  }
 </style>
 </head>
 <body>
@@ -812,16 +1089,24 @@
   </div>
 
   <div class="topbar-right">
+    <button class="audio-btn mono" onclick="openSettings()" title="调查设置">⚙ 设置</button>
     <button class="audio-btn mono" id="soundBtn" onclick="toggleAudio()">
       <span id="soundIcon">🔇</span>
       <span id="soundText">AUDIO: OFF</span>
     </button>
     <div class="sys-meta mono">
       <div>FILE: MAWEI-1884</div>
-      <div>STATE: <b>UNRESOLVED</b></div>
+      <div>STATE: <b id="sysState">UNRESOLVED</b></div>
     </div>
   </div>
 </header>
+
+<!-- 移动端页签 -->
+<nav class="mobile-tabs">
+  <button data-pane="list" onclick="setPane('list')">📁 卷宗</button>
+  <button data-pane="canvas" onclick="setPane('canvas')">🕸️ 关系图</button>
+  <button data-pane="notes" onclick="setPane('notes')">📝 笔记</button>
+</nav>
 
 <!-- ========== 主体 ========== -->
 <div class="workspace">
@@ -845,9 +1130,15 @@
         </div>
         <div class="card-body">
           <div class="target-layout">
-            <div class="target-photo">
+            <div class="target-photo" id="photo-0">
               <span class="q">?</span>
               <span class="lbl">NO PHOTO</span>
+              <span class="ph-art">
+                <span class="ph-wake"></span>
+                <span class="ph-hull"></span>
+                <span class="ph-mast"></span>
+                <span class="ph-sail"></span>
+              </span>
             </div>
             <div class="target-fields">
               <div>
@@ -901,7 +1192,10 @@
         </div>
         <div class="card-body">
           <div class="person-row">
-            <div class="person-photo">?</div>
+            <div class="person-photo" id="photo-1">
+              <span class="ph-q">?</span>
+              <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
+            </div>
             <div class="person-fields">
               <div>
                 <div class="field-label"><span>真实姓名</span></div>
@@ -950,7 +1244,10 @@
         </div>
         <div class="card-body">
           <div class="person-row">
-            <div class="person-photo">?</div>
+            <div class="person-photo" id="photo-2">
+              <span class="ph-q">?</span>
+              <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
+            </div>
             <div class="person-fields">
               <div>
                 <div class="field-label"><span>真实姓名</span></div>
@@ -999,7 +1296,10 @@
         </div>
         <div class="card-body">
           <div class="person-row">
-            <div class="person-photo">?</div>
+            <div class="person-photo" id="photo-3">
+              <span class="ph-q">?</span>
+              <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
+            </div>
             <div class="person-fields">
               <div>
                 <div class="field-label"><span>真实姓名</span></div>
@@ -1048,34 +1348,19 @@
 
     <div class="sidebar-card">
       <div class="sidebar-card-head">
-        <h3>待办列表 CHECKLIST</h3>
-        <span class="tag mono">TASKS</span>
+        <h3>调查须知 BRIEFING</h3>
+        <span class="tag mono">GUIDE</span>
       </div>
-      <p>拖选案卷中的文字，右键<b>收藏</b>入笔记本，再归位至关系图。</p>
+      <p>拖选案卷文字，右键<b>收藏</b>入笔记本，再归位关系图并<b>引证确认</b>。卡住可查<b>提示</b>，或按 🔍 检索档案索引词解封新卷。</p>
     </div>
 
     <div>
       <div class="section-title">
-        <span>PROGRESS</span>
+        <span>PROGRESS · 调查进度</span>
+        <button class="sec-btn" type="button" onclick="openHints()">💡 提示</button>
       </div>
-      <div class="todo-list">
-        <div class="todo" id="todo-1">
-          <span class="check" id="check-1"></span>
-          <span>检视案卷并选中关键线索</span>
-        </div>
-        <div class="todo" id="todo-2">
-          <span class="check" id="check-2"></span>
-          <span>整理笔记本中的线索</span>
-        </div>
-        <div class="todo" id="todo-3">
-          <span class="check" id="check-3"></span>
-          <span>填入真实姓名与职务</span>
-        </div>
-        <div class="todo" id="todo-4">
-          <span class="check" id="check-4"></span>
-          <span>确认“老掌柜”异样解剖记录</span>
-        </div>
-      </div>
+      <div class="prog-list" id="progList"></div>
+      <div class="prog-foot" id="progFoot"></div>
     </div>
 
     <div style="flex:1;display:flex;flex-direction:column;min-height:0">
@@ -1112,10 +1397,10 @@
     📁
     <span class="badge" id="archiveBadge">·</span>
   </button>
-  <button class="circle-btn primary" onclick="playClick()" title="关系图">🕸️</button>
-  <button class="circle-btn" onclick="playClick()" title="检索">🔍</button>
-  <button class="circle-btn" onclick="playClick()" title="笔录">📝</button>
-  <button class="circle-btn" onclick="playClick()" title="设置">⚙️</button>
+  <button class="circle-btn primary" onclick="focusCanvas()" title="关系图 · 重置视图">🕸️</button>
+  <button class="circle-btn" onclick="openGlobalSearch()" title="全局检索">🔍</button>
+  <button class="circle-btn" onclick="toggleNotebookFull()" title="全屏笔记本">📝</button>
+  <button class="circle-btn" onclick="openSettings()" title="设置">⚙️</button>
   <div class="bottombar-status">
     SYSTEM: READY // MINJIANG RIVER EXPEDITION 1884
     <span id="rejectStat" style="display:none;margin-left:14px;color:#d98">驳回 <b id="rejectNum">0</b> 次</span>
@@ -1131,7 +1416,7 @@
     </div>
     <div class="doc-foot">
       <span class="hint">
-        用鼠标<b>选中文字</b>，右键可「收藏」或「在案卷中检索」
+        选中文字后：桌面端<b>右键</b>，手机端<b>长按拖选</b>即浮出「收藏 / 检索」
       </span>
       <button class="btn-primary" onclick="closeArchive()">合 卷</button>
     </div>
@@ -1194,7 +1479,12 @@
     </div>
 
     <div class="final-foot">
-      <button class="btn-final" onclick="location.reload()">重新开始调查</button>
+      <button class="btn-final ghost" onclick="openReport(true)">回看结案陈词</button>
+      <button class="btn-final" onclick="resetInvestigation()">重新开始调查</button>
+      <div class="chapter-row">
+        <button class="btn-chapter" disabled>其二 · 福星号（待解密）</button>
+        <button class="btn-chapter" disabled>其余七舰 · 待解密</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1213,11 +1503,104 @@
 <div class="search-modal" id="searchModal">
   <div class="search-panel">
     <div class="search-head">
-      <h2>案卷检索结果</h2>
+      <h2>海防局档案检索</h2>
       <button class="btn-close-x" style="position:static" onclick="closeSearch()">✕</button>
+    </div>
+    <div class="search-input-row">
+      <input class="search-input" id="searchInput" type="text" autocomplete="off"
+             placeholder="输入关键词，如：张佩纶 / 提督 / 损管"
+             onkeydown="if(event.key==='Enter'){event.preventDefault();doSearch(this.value);}">
+      <button class="btn-primary" type="button"
+              onclick="doSearch(document.getElementById('searchInput').value)">检 索</button>
     </div>
     <div class="search-body" id="searchList"></div>
   </div>
+</div>
+
+<!-- ========== 提示 ========== -->
+<div class="modal" id="hintModal">
+  <div class="hint-panel">
+    <div class="hint-head">
+      <div>
+        <h2>💡 调查提示</h2>
+        <div class="hh-sub">提示按三档递进：先指案卷，再指段落，最后指词</div>
+      </div>
+      <button class="btn-close-x" style="position:static" type="button" onclick="closeHints()">✕</button>
+    </div>
+    <div class="hint-body" id="hintBody"></div>
+  </div>
+</div>
+
+<!-- ========== 结案报告 ========== -->
+<div class="modal" id="reportModal">
+  <div class="report-panel">
+    <div class="report-head">
+      <h2>马江海防调查 · 结案陈词</h2>
+      <div class="report-meta">FILE MAWEI-1884 · 其一 [老掌柜] · 呈报闽省海防局</div>
+      <div class="report-seal">闽省<br>海防局</div>
+    </div>
+    <div class="report-body" id="reportBody"></div>
+    <div class="report-foot">
+      <button class="btn-ghost" type="button" onclick="closeReport()">再核一遍</button>
+      <button class="btn-report" type="button" onclick="submitReport()">呈 报 结 案</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 设置 ========== -->
+<div class="modal" id="settingsModal">
+  <div class="set-panel">
+    <div class="set-head">
+      <h2>⚙ 调查设置</h2>
+      <button class="btn-close-x" style="position:static" type="button" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="set-body">
+      <div class="set-row">
+        <div class="sr-label">
+          <span>音效</span>
+          <span class="sr-sub" id="setAudioState">AUDIO: OFF</span>
+        </div>
+        <button class="set-btn" type="button" onclick="toggleAudio(true)">切换</button>
+      </div>
+      <div class="set-row">
+        <div class="sr-label">
+          <span>存档</span>
+          <span class="sr-sub" id="setSaveState">—</span>
+        </div>
+        <button class="set-btn" type="button" onclick="saveNow(); toast('已保存当前调查进度。')">立即保存</button>
+      </div>
+      <div class="set-row">
+        <div class="sr-label">
+          <span>重置调查</span>
+          <span class="sr-sub">清除存档，从第一份案卷重新开始</span>
+        </div>
+        <button class="set-btn danger" type="button" onclick="resetInvestigation()">重置</button>
+      </div>
+      <div class="set-row">
+        <div class="sr-label">
+          <span>卷宗线索</span>
+          <span class="sr-sub" id="setStatLine">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 全屏笔记本 ========== -->
+<div class="nb-full" id="nbFull">
+  <div class="nb-full-panel">
+    <div class="nb-full-head">
+      <h2>📝 调查笔记本 · 全览</h2>
+      <button class="btn-ghost" type="button" onclick="toggleNotebookFull()">关闭</button>
+    </div>
+    <div class="nb-grid" id="nbFullBody"></div>
+  </div>
+</div>
+
+<!-- ========== 选区操作条（触屏 / 拖选） ========== -->
+<div class="sel-bar" id="selBar">
+  <button type="button" onclick="selAct('collect')">📌 收藏</button>
+  <button type="button" onclick="selAct('search')">🔍 检索</button>
 </div>
 
 <script>
@@ -1241,7 +1624,12 @@ const state = {
   activeSlot: null,
   activeDoc: 0,
   finished: false,
-  failCount: 0       // 确认结论被驳回次数（供结案报告展示）
+  reportSeen: false,
+  failCount: 0,       // 确认结论被驳回次数（供结案报告展示）
+  hintsUsed: 0,       // 已发放提示档数
+  hintLevels: {},     // { 'cid.st': 已解锁到第几档 }
+  startedAt: Date.now(),
+  saveReady: false    // 读档结束后才允许写档，避免空档覆盖
 };
 
 /* 正确答案 */
@@ -1277,6 +1665,7 @@ const DOCS = [
     title: '会办海防密函',
     date: '光绪十年七月初三 · 未时前',
     locked: false,
+    keywords: ['会办', '密函', '上谕', '严禁开炮'],
     body: `
       <p class="no-indent"><strong>朝廷上谕摘录：</strong>“法夷游弋马江，战和未定。切不可先发制人，致招开端。”</p>
       <p>会办福建海防大臣 张佩纶 下达严令：各舰原锚不动，违者按军法处决。</p>
@@ -1291,6 +1680,7 @@ const DOCS = [
     locked: true,
     unlockWhen: { card: 1 },
     unlockHint: '需先确认「关联要员 A」的姓名',
+    keywords: ['口供', '证言', '罗星塔', '营兵'],
     body: `
       <p class="no-indent"><strong>幸存营兵证言：</strong>“战前老掌柜请移锚罗星塔，水师提督 张成 怒斥不许。”</p>
       <p>及至未时炮响，提督 福建水师提督 张成见形势大乱，未登舰指挥即仓皇逃往岸上避难。</p>
@@ -1304,6 +1694,7 @@ const DOCS = [
     locked: true,
     unlockWhen: { card: 2 },
     unlockHint: '需先确认「关联要员 B」的姓名',
+    keywords: ['损管', '血书', '尾炮', '飞檐'],
     body: `
       <p class="no-indent"><strong>损管日志残页：</strong>“敌鱼雷艇逼近右舷，旗舰管带 麦元良 屹立飞檐。”</p>
       <p>管带 扬武号管带 麦元良与老掌柜死守尾炮，命中法舰后同沉江底。</p>
@@ -1317,6 +1708,7 @@ const DOCS = [
     locked: true,
     unlockWhen: { card: 3 },
     unlockHint: '需先确认「关联要员 C」的姓名',
+    keywords: ['解剖', '打捞', '勘验', '船政旧档'],
     body: `
       <p class="no-indent"><strong>绝密打捞剖析：</strong>“老掌柜沉水处位于江心，打捞发现其躯体异样：”</p>
       <p>一、并非血肉之躯，实为 闽江第一号木胁铁壳舰。</p>
@@ -1335,7 +1727,7 @@ function initAudio(){
     try{ state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
   }
 }
-function toggleAudio(){
+function toggleAudio(keepPanel){
   initAudio();
   state.audioOn = !state.audioOn;
   document.getElementById('soundIcon').textContent = state.audioOn ? '🔊' : '🔇';
@@ -1343,6 +1735,9 @@ function toggleAudio(){
   if(state.audioOn && state.audioCtx && state.audioCtx.state === 'suspended'){
     state.audioCtx.resume();
   }
+  const sa = document.getElementById('setAudioState');
+  if(sa) sa.textContent = state.audioOn ? 'AUDIO: ON' : 'AUDIO: OFF';
+  saveNow();
 }
 function playClick(){
   if(!state.audioOn || !state.audioCtx) return;
@@ -1387,6 +1782,58 @@ function playRumble(){
   }catch(e){}
 }
 
+/* 新案卷解封：两声上行 */
+function playUnlock(){
+  if(!state.audioOn || !state.audioCtx) return;
+  [660, 990].forEach((f, i) => {
+    try{
+      const t = state.audioCtx.currentTime + i * 0.11;
+      const o = state.audioCtx.createOscillator();
+      const g = state.audioCtx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(f, t);
+      g.gain.setValueAtTime(0.018, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      o.connect(g); g.connect(state.audioCtx.destination);
+      o.start(t); o.stop(t + 0.18);
+    }catch(e){}
+  });
+}
+
+/* 结论确认：三声短促上行 */
+function playSuccess(){
+  if(!state.audioOn || !state.audioCtx) return;
+  [523, 659, 784].forEach((f, i) => {
+    try{
+      const t = state.audioCtx.currentTime + i * 0.09;
+      const o = state.audioCtx.createOscillator();
+      const g = state.audioCtx.createGain();
+      o.type = 'square';
+      o.frequency.setValueAtTime(f, t);
+      g.gain.setValueAtTime(0.012, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+      o.connect(g); g.connect(state.audioCtx.destination);
+      o.start(t); o.stop(t + 0.1);
+    }catch(e){}
+  });
+}
+
+/* 呈报结案：一记闷响 */
+function playStamp(){
+  if(!state.audioOn || !state.audioCtx) return;
+  try{
+    const o = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(240, state.audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(60, state.audioCtx.currentTime + 0.26);
+    g.gain.setValueAtTime(0.06, state.audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + 0.3);
+    o.connect(g); g.connect(state.audioCtx.destination);
+    o.start(); o.stop(state.audioCtx.currentTime + 0.3);
+  }catch(e){}
+}
+
 /* =========================================================
    缩放
    ========================================================= */
@@ -1398,6 +1845,96 @@ function adjustZoom(delta){
 function applyZoom(){
   document.getElementById('canvas').style.transform = `scale(${state.zoom})`;
   document.getElementById('zoomVal').textContent = Math.round(state.zoom * 100) + '%';
+}
+
+/* =========================================================
+   进度存档（localStorage）
+   ========================================================= */
+const SAVE_KEY = 'mawei1884-save-v1';
+
+function snapshot(){
+  return {
+    v: 1,
+    notes: state.notes,
+    slots: state.slots,
+    readDocs: [...state.readDocs],
+    unlockedDocs: [...state.unlockedDocs],
+    failCount: state.failCount,
+    hintsUsed: state.hintsUsed,
+    hintLevels: state.hintLevels,
+    finished: state.finished,
+    reportSeen: state.reportSeen,
+    startedAt: state.startedAt,
+    audioOn: state.audioOn
+  };
+}
+function saveNow(){
+  if(!state.saveReady) return;
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot()));
+    const ss = document.getElementById('setSaveState');
+    if(ss) ss.textContent = '已保存 · ' + new Date().toLocaleTimeString('zh-CN', {hour12:false});
+  }catch(e){}
+}
+function clearSave(){
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+}
+function loadSave(){
+  let raw = null;
+  try{ raw = localStorage.getItem(SAVE_KEY); }catch(e){ return false; }
+  if(!raw) return false;
+  let s = null;
+  try{ s = JSON.parse(raw); }catch(e){ return false; }
+  if(!s || s.v !== 1) return false;
+
+  state.notes      = Array.isArray(s.notes) ? s.notes : [];
+  state.failCount  = Number(s.failCount) || 0;
+  state.hintsUsed  = Number(s.hintsUsed) || 0;
+  state.hintLevels = s.hintLevels || {};
+  state.readDocs     = new Set(Array.isArray(s.readDocs) ? s.readDocs : []);
+  state.unlockedDocs = new Set(Array.isArray(s.unlockedDocs) ? s.unlockedDocs : []);
+  state.startedAt  = Number(s.startedAt) || Date.now();
+  state.finished   = !!s.finished;
+  state.reportSeen = !!s.reportSeen;
+  state.audioOn    = !!s.audioOn;
+
+  /* 开局即可读的案卷始终可读，避免脏档把人锁死 */
+  DOCS.forEach((d, i) => { if(!d.locked) state.unlockedDocs.add(i); });
+
+  /* 槽位逐项合并，兼容旧档缺字段 */
+  [0,1,2,3].forEach(cid => {
+    Object.keys(state.slots[cid]).forEach(st => {
+      const d = s.slots && s.slots[cid] ? s.slots[cid][st] : null;
+      if(!d) return;
+      state.slots[cid][st] = {
+        value: d.value || null,
+        status: (d.status === 'tentative' || d.status === 'confirmed') ? d.status : 'empty',
+        evidence: Array.isArray(d.evidence) ? d.evidence : []
+      };
+      if(state.slots[cid][st].status === 'empty') state.slots[cid][st].value = null;
+    });
+  });
+
+  /* 引用/归位标记以槽位实际状态为准，修复可能的脏档 */
+  const usedTexts = new Set();
+  const citedIds  = new Set();
+  [0,1,2,3].forEach(cid => {
+    Object.keys(state.slots[cid]).forEach(st => {
+      const sl = state.slots[cid][st];
+      if(sl.value && sl.status !== 'empty') usedTexts.add(sl.value);
+      if(sl.status === 'confirmed') sl.evidence.forEach(id => citedIds.add(id));
+    });
+  });
+  state.notes.forEach(n => {
+    n.used  = usedTexts.has(n.text);
+    n.cited = citedIds.has(n.id);
+  });
+
+  if(state.audioOn){
+    document.getElementById('soundIcon').textContent = '🔊';
+    document.getElementById('soundText').textContent = 'AUDIO: ON';
+  }
+  return true;
 }
 
 /* =========================================================
@@ -1449,6 +1986,9 @@ function checkUnlocks(){
   if(newly.length === 0) return;
   renderArchiveList();
   renderArchiveBadge(true);
+  playUnlock();
+  renderProgress();
+  saveNow();
   toast('📂 新案卷解封：' + newly.map(d => '《' + d.title + '》').join('、'));
 }
 
@@ -1511,7 +2051,8 @@ function openArchive(idx){
 
   document.getElementById('archiveModal').classList.add('on');
   renderArchiveList();
-  markTodoDone(1);
+  renderProgress();
+  saveNow();
 }
 
 function closeArchive(){
@@ -1546,7 +2087,8 @@ function collectSelection(raw){
   };
   state.notes.push(note);
   renderNotebook();
-  markTodoDone(2);
+  renderProgress();
+  saveNow();
   toast(`📌 已收藏：「${clue}」`);
 }
 
@@ -1565,31 +2107,85 @@ function showCtxMenu(x, y, text){
 }
 function hideCtxMenu(){ ctxMenu.style.display = 'none'; }
 
-/* 在案卷中检索（游戏内） */
-function searchInGame(q){
-  q = (q||'').trim();
-  if(!q) return;
-  const qn = q.replace(/\s+/g,'');
+/* =========================================================
+   阶段5 · 全局检索
+   ========================================================= */
+function openGlobalSearch(prefill){
+  const inp = document.getElementById('searchInput');
+  document.getElementById('searchModal').classList.add('on');
+  if(typeof prefill === 'string' && prefill.trim()){
+    inp.value = prefill.trim();
+    doSearch(inp.value);
+  } else {
+    document.getElementById('searchList').innerHTML =
+      '<div class="search-tip">检索海防局已归档条目。<br>输入人名、职务、舰船特征，或档案索引词。</div>';
+    setTimeout(() => inp.focus(), 60);
+  }
+  playClick();
+}
+
+function doSearch(q){
+  q = (q || '').trim();
+  const list = document.getElementById('searchList');
+  if(!q){
+    list.innerHTML = '<div class="search-tip">请输入检索词。</div>';
+    return;
+  }
+  const qn = q.replace(/\s+/g, '');
+  if(!qn) return;
+
   const results = [];
   DOCS.forEach((d, i) => {
-    if(!isDocUnlocked(i)) return;           // 仅检索已解封案卷
-    const plain = d.body.replace(/<[^>]+>/g,'').replace(/\s+/g,'');
-    if(plain.includes(qn)){
-      results.push({ i, title: d.title, snippet: makeSnippet(d, q) });
-    }
+    if(!isDocUnlocked(i)) return;
+    const plain = d.body.replace(/<[^>]+>/g, '').replace(/\s+/g, '');
+    if(plain.includes(qn)) results.push({ i, title: d.title, snippet: makeSnippet(d, q), tag: '' });
   });
-  const list = document.getElementById('searchList');
+
+  /* 索引词命中：解封未开放案卷（索引词不含任何答案，避免直接跳过推理） */
+  const unlocked = [];
+  if(qn.length >= 2){
+    DOCS.forEach((d, i) => {
+      if(isDocUnlocked(i)) return;
+      const kws = d.keywords || [];
+      const hit = kws.some(k => {
+        const kn = k.replace(/\s+/g, '');
+        return kn.includes(qn) || qn.includes(kn);
+      });
+      if(!hit) return;
+      state.unlockedDocs.add(i);
+      unlocked.push(d);
+      results.push({
+        i, title: d.title,
+        snippet: '【档案索引命中】该卷宗原未开放，检索词与其索引条目标注相合，已调阅上架。',
+        tag: '<span class="si-tag">已解封</span>'
+      });
+    });
+  }
+
+  if(unlocked.length){
+    renderArchiveList();
+    renderArchiveBadge(true);
+    playUnlock();
+    renderProgress();
+    saveNow();
+    toast('📂 索引命中，解封：' + unlocked.map(d => '《' + d.title + '》').join('、'));
+  }
+
   if(results.length === 0){
-    list.innerHTML = `<div class="search-empty">已解封案卷中未检索到「${q}」</div>`;
+    list.innerHTML = `<div class="search-empty">海防局档案中未见「${q}」此条目。<br>或可换个写法，再检索一次。</div>`;
   } else {
     list.innerHTML = results.map(r => `
-      <div class="search-item" onclick="openArchive(${r.i}); closeSearch()">
-        <div class="si-title">${r.title}</div>
+      <div class="search-item" onclick="closeSearch(); openArchive(${r.i})">
+        <div class="si-title">${r.title}${r.tag || ''}</div>
         <div class="si-snippet">${r.snippet}</div>
       </div>`).join('');
   }
-  document.getElementById('searchModal').classList.add('on');
   playClick();
+}
+
+/* 右键菜单入口：保留为「在案卷中检索」，并把检索词预填进检索框 */
+function searchInGame(q){
+  openGlobalSearch(q);
 }
 function makeSnippet(d, q){
   const plain = d.body.replace(/<[^>]+>/g,'').replace(/\s+/g,'');
@@ -1627,43 +2223,47 @@ function renderNotebook(){
   const cntEl = document.getElementById('noteCount');
   cntEl.textContent = filter ? `${list.length}/${state.notes.length}` : state.notes.length;
 
+  let html = '';
   if(state.notes.length === 0){
-    nb.innerHTML = `
+    html = `
       <div class="empty-hint">
         <span class="arrow">✒</span>
         尚未收藏任何线索。<br>
         打开【检视案卷】，<br>
         用鼠标选中文字后右键收藏。
       </div>`;
-    return;
-  }
-  if(list.length === 0){
-    nb.innerHTML = `<div class="empty-hint">该来源下暂无笔记。</div>`;
-    return;
+  } else if(list.length === 0){
+    html = `<div class="empty-hint">该来源下暂无笔记。</div>`;
+  } else {
+    html = list.map(n => {
+      const cls = [n.used ? 'used' : '', n.cited ? 'cited' : '', n.flag === 'doubt' ? 'doubt' : '']
+        .filter(Boolean).join(' ');
+      const hint = n.used ? '已归位'
+        : (n.cited ? '已引用'
+          : (n.flag === 'doubt' ? '存疑 · 待核' : '点击归位至关系图'));
+      return `
+      <div class="note ${cls}" data-id="${n.id}">
+        <div class="note-head">
+          <span class="note-source">${n.source}</span>
+          <span class="note-time">${n.time}</span>
+        </div>
+        <div class="note-text"><span class="underline">${n.text}</span></div>
+        <div class="note-foot">
+          <span class="note-hint">${hint}</span>
+          <span class="note-tools">
+            <button class="note-tool flag ${n.flag === 'doubt' ? 'on' : ''}" type="button" title="标记存疑 / 无用" onclick="event.stopPropagation();toggleNoteFlag('${n.id}')">?</button>
+            <button class="note-tool del" type="button" title="删除此线索" onclick="event.stopPropagation();deleteNote('${n.id}')">🗑</button>
+          </span>
+        </div>
+      </div>`;
+    }).join('');
   }
 
-  nb.innerHTML = list.map(n => {
-    const cls = [n.used ? 'used' : '', n.cited ? 'cited' : '', n.flag === 'doubt' ? 'doubt' : '']
-      .filter(Boolean).join(' ');
-    const hint = n.used ? '已归位'
-      : (n.cited ? '已引用'
-        : (n.flag === 'doubt' ? '存疑 · 待核' : '点击归位至关系图'));
-    return `
-    <div class="note ${cls}" data-id="${n.id}">
-      <div class="note-head">
-        <span class="note-source">${n.source}</span>
-        <span class="note-time">${n.time}</span>
-      </div>
-      <div class="note-text"><span class="underline">${n.text}</span></div>
-      <div class="note-foot">
-        <span class="note-hint">${hint}</span>
-        <span class="note-tools">
-          <button class="note-tool flag ${n.flag === 'doubt' ? 'on' : ''}" type="button" title="标记存疑 / 无用" onclick="event.stopPropagation();toggleNoteFlag('${n.id}')">?</button>
-          <button class="note-tool del" type="button" title="删除此线索" onclick="event.stopPropagation();deleteNote('${n.id}')">🗑</button>
-        </span>
-      </div>
-    </div>`;
-  }).join('');
+  nb.innerHTML = html;
+
+  /* 全屏笔记本同步（若已打开） */
+  const full = document.getElementById('nbFullBody');
+  if(full) full.innerHTML = html;
 
   /* 笔记本内点击 = 归位提示（工具按钮除外） */
   nb.querySelectorAll('.note:not(.used)').forEach(el => {
@@ -1673,6 +2273,8 @@ function renderNotebook(){
       toast('请在关系图中点击空槽位，再从笔记本中选择此线索。');
     };
   });
+
+  saveNow();
 }
 
 /* 删除笔记（二次确认；已归位/已引用不可删，避免与槽位脱钩） */
@@ -1686,6 +2288,7 @@ function deleteNote(id){
   openMiniConfirm('删除线索', `确定删除「${n.text}」？此操作不可撤销。`, () => {
     state.notes = state.notes.filter(x => x.id !== id);
     renderNotebook();
+    renderProgress();
     toast('已删除该条线索。');
   });
 }
@@ -1696,6 +2299,7 @@ function toggleNoteFlag(id){
   if(!n) return;
   n.flag = (n.flag === 'doubt') ? null : 'doubt';
   renderNotebook();
+  renderProgress();
   toast(n.flag === 'doubt' ? '已标记为存疑，可随时取消。' : '已取消存疑标记。');
 }
 
@@ -1879,7 +2483,10 @@ function confirmSlot(){
   closeConfirm();
   renderSlot(cid, st);
   renderNotebook();
+  renderProgress();
   checkCardComplete(cid);
+  playSuccess();
+  saveNow();
   checkUnlocks();
   checkVictory();
 }
@@ -1894,7 +2501,9 @@ function unlockSlot(cid, st){
       slot.status = 'tentative';
       renderSlot(cid, st);
       renderNotebook();
+      renderProgress();
       checkCardComplete(cid);
+      saveNow();
       toast('已解除确认，结论回到暂定状态。');
     }
   );
@@ -1917,7 +2526,9 @@ function withdrawSlot(cid, st){
   slot.evidence = [];
   renderSlot(cid, st);
   renderNotebook();
+  renderProgress();
   checkCardComplete(cid);
+  saveNow();
   toast('已撤回该暂定结论，所占线索退回笔记本。');
 }
 
@@ -1928,6 +2539,8 @@ function renderFailCount(){
   if(!el || !num) return;
   num.textContent = state.failCount;
   el.style.display = state.failCount > 0 ? '' : 'none';
+  renderProgress();
+  saveNow();
 }
 
 /* 游戏内二次确认弹窗 */
@@ -1969,8 +2582,9 @@ function selectOption(noteId){
   closePicker();
   renderSlot(cid, st);
   renderNotebook();
-  markTodoDone(3);
+  renderProgress();
   checkCardComplete(cid);
+  saveNow();
 }
 
 /* =========================================================
@@ -1989,14 +2603,32 @@ function isCardSolved(cid){
 function checkCardComplete(cid){
   const card = document.getElementById(`card-${cid}`);
   if(card) card.classList.toggle('complete', isCardSolved(cid));
+  renderPhoto(cid);
   drawLines();
 }
+
+/* 阶段9 · 肖像显影 */
+function renderPhoto(cid){
+  const el = document.getElementById('photo-' + cid);
+  if(!el) return;
+  const solved = isCardSolved(cid);
+  el.classList.toggle('revealed', solved);
+  const lbl = el.querySelector('.ph-lbl');
+  if(!lbl) return;
+  if(!solved){ lbl.textContent = ''; return; }
+  lbl.textContent = (cid === 0) ? '扬武号'
+    : (state.slots[cid].name.value ? slotDisplayValue(cid, 'name') : '');
+}
+
+/* 全部结论确认 → 先出结案陈词，手动呈报才进 reveal */
 function checkVictory(){
   const allSolved = [0,1,2,3].every(cid => isCardSolved(cid));
   if(allSolved && !state.finished){
     state.finished = true;
-    markTodoDone(4);
-    setTimeout(triggerFinal, 700);
+    renderProgress();
+    updateSysState();
+    saveNow();
+    setTimeout(() => openReport(), 620);
   }
 }
 
@@ -2005,6 +2637,7 @@ function checkVictory(){
    ========================================================= */
 function triggerFinal(){
   playRumble();
+  document.getElementById('reportModal').classList.remove('on');
   document.body.classList.add('reveal-flash');
   setTimeout(() => {
     document.body.classList.remove('reveal-flash');
@@ -2013,21 +2646,303 @@ function triggerFinal(){
   }, 650);
 }
 function renderShipGrid(){
-  document.getElementById('shipGrid').innerHTML = SHIPS.map((s, i) => `
+  const grid = document.getElementById('shipGrid');
+  grid.innerHTML = SHIPS.map((s, i) => `
     <div class="ship-cell ${i === 0 ? 'revealed' : ''}" style="animation-delay:${i * 0.12}s">
       <span class="ship-name">${i === 0 ? s.name : '代号 · ' + s.name}</span>
       <span class="ship-meta">${i === 0 ? s.meta : '🔒 未解密'}</span>
     </div>
   `).join('');
+
+  /* 逐格点亮：已解密格先暗，再依次亮起 */
+  const cells = Array.from(grid.querySelectorAll('.ship-cell'));
+  cells.forEach(c => { if(!c.classList.contains('revealed')) c.style.opacity = '.35'; });
+  cells.forEach((c, i) => {
+    setTimeout(() => {
+      c.style.transition = 'opacity .45s ease';
+      c.style.opacity = '1';
+    }, 260 + i * 90);
+  });
 }
 
 /* =========================================================
-   待办
+   阶段8 · 进度（数据驱动，不再是硬编码待办）
    ========================================================= */
-function markTodoDone(n){
-  const t = document.getElementById(`todo-${n}`);
-  const c = document.getElementById(`check-${n}`);
-  if(t && c){ t.classList.add('done'); c.textContent = '✓'; }
+const SLOT_LABEL = {
+  '0.role': '老掌柜 · 身份', '0.wound': '老掌柜 · 创痕',
+  '1.name': '要员 A · 真实姓名', '1.role': '要员 A · 官职',
+  '2.name': '要员 B · 真实姓名', '2.role': '要员 B · 官职',
+  '3.name': '要员 C · 真实姓名', '3.role': '要员 C · 官职'
+};
+const QUESTIONS = {
+  '0.role': '代号「老掌柜」者，究竟是何实体？',
+  '0.wound': '其致命创痕在何处、因何而致？',
+  '1.name': '严令各舰不得开火者，何人？',
+  '2.name': '开战后率先弃舰离场者，何人？',
+  '3.name': '死守尾炮、与舰同沉者，何人？'
+};
+
+/* 统计：只计参与判据的槽位（「官职」栏仅供备查，不计入） */
+function slotStats(){
+  let total = 0, done = 0, tentative = 0;
+  [0,1,2,3].forEach(cid => {
+    Object.keys(state.slots[cid]).forEach(st => {
+      if(!ANSWERS[cid] || !ANSWERS[cid][st]) return;
+      total++;
+      const sl = state.slots[cid][st];
+      if(sl.status === 'confirmed' && textMatchesAnswer(cid, st, sl.value)) done++;
+      else if(sl.status === 'tentative') tentative++;
+    });
+  });
+  return { total, done, tentative };
+}
+
+function renderProgress(){
+  const el = document.getElementById('progList');
+  if(!el) return;
+  const s = slotStats();
+  const unlocked = state.unlockedDocs.size;
+  const readCount = state.readDocs.size;
+  const rows = [
+    { label: '结论确认', val: `${s.done} / ${s.total}`, pct: s.total ? s.done / s.total * 100 : 0 },
+    { label: '案卷解封', val: `${unlocked} / ${DOCS.length}`, pct: DOCS.length ? unlocked / DOCS.length * 100 : 0 },
+    { label: '案卷已阅', val: `${readCount} / ${DOCS.length}`, pct: DOCS.length ? readCount / DOCS.length * 100 : 0 }
+  ];
+  el.innerHTML = rows.map(r => `
+    <div class="prog-row ${r.pct >= 100 ? 'done' : ''}">
+      <div class="prog-top"><span>${r.label}</span><b>${r.val}</b></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${r.pct}%"></div></div>
+    </div>`).join('');
+
+  const foot = document.getElementById('progFoot');
+  if(foot){
+    foot.textContent = `笔记 ${state.notes.length} 条 · 驳回 ${state.failCount} 次 · 提示 ${state.hintsUsed} 档`
+      + (s.tentative ? ` · 暂定 ${s.tentative} 项` : '');
+  }
+}
+
+function updateSysState(){
+  const el = document.getElementById('sysState');
+  if(el) el.textContent = state.finished ? 'RESOLVED' : 'UNRESOLVED';
+}
+
+/* =========================================================
+   阶段10 · 提示（按槽位三档递进）
+   ========================================================= */
+const HINTS = {
+  '0.role': [
+    '此栏要的是「老掌柜」的本质，不是人名。答案不在人身上。',
+    '沉船勘验记录第一条便直言其并非血肉之躯——设法调阅《老掌柜异样解剖记录》。',
+    '它实为「闽江第一号木胁铁壳舰」，亦即福建水师旗舰。选中此句收藏后填入。'
+  ],
+  '0.wound': [
+    '创痕不在舱面之上，而在水面之下一侧。',
+    '打捞记录第二条：右舷水下，痕迹系鱼雷击穿所致。',
+    '收藏「右舷水下贯穿破洞」整句，填入创痕栏。'
+  ],
+  '1.name': [
+    '查《会办海防密函》的落款：严令是谁签发的？',
+    '「会办福建海防大臣」六字之后紧接的那个名字。',
+    '张佩纶。留意：札记中的「张佩伦」是另一人，勿混。'
+  ],
+  '2.name': [
+    '确认要员 A 之后，《备忘口供记录》会解封，提督行踪记在其中。',
+    '幸存营兵证言提到「水师提督」怒斥不许移锚——记下此人姓名。',
+    '张成。营中另有一位名唤「张城」的守备，是干扰项。'
+  ],
+  '3.name': [
+    '《损管血书残页》记着最后死守尾炮的人。',
+    '「旗舰管带」四字之后的名字。',
+    '麦元良。帮带「麦元亮」战前已调岸防，勿混。'
+  ]
+};
+
+function openHints(){
+  if(state.finished){ toast('本案已结，无须提示。'); return; }
+  playClick();
+  renderHints();
+  document.getElementById('hintModal').classList.add('on');
+}
+function closeHints(){
+  document.getElementById('hintModal').classList.remove('on');
+}
+function pendingSlots(){
+  const out = [];
+  [0,1,2,3].forEach(cid => {
+    Object.keys(state.slots[cid]).forEach(st => {
+      if(!ANSWERS[cid] || !ANSWERS[cid][st]) return;
+      if(state.slots[cid][st].status === 'confirmed') return;
+      out.push(cid + '.' + st);
+    });
+  });
+  return out;
+}
+function renderHints(){
+  const body = document.getElementById('hintBody');
+  const pend = pendingSlots();
+  if(pend.length === 0){
+    body.innerHTML = '<div class="hint-empty">各项结论均已确认，无待提示之事。<br>可呈报结案。</div>';
+    return;
+  }
+  body.innerHTML = pend.map(key => {
+    const lv = state.hintLevels[key] || 0;
+    const arr = HINTS[key] || [];
+    const shown = arr.slice(0, lv).map((t, i) =>
+      `<div class="hint-text on"><span class="rq" style="color:#8a7a5c">第${i+1}档 · </span>${t}</div>`).join('');
+    const maxed = lv >= arr.length;
+    return `<div class="hint-row ${maxed ? 'maxed' : ''}">
+      <div class="hint-row-head">
+        <div>
+          <div class="hint-slot">${SLOT_LABEL[key] || key}</div>
+          <div class="hint-lv">已解锁 ${lv} / ${arr.length} 档</div>
+        </div>
+        <button class="btn-hint ${maxed ? 'off' : ''}" type="button"
+                onclick="takeHint('${key}')" ${maxed ? 'disabled' : ''}>
+          ${maxed ? '已至末档' : '获取提示'}
+        </button>
+      </div>
+      ${shown}
+    </div>`;
+  }).join('');
+}
+function takeHint(key){
+  const arr = HINTS[key] || [];
+  const lv = state.hintLevels[key] || 0;
+  if(lv >= arr.length) return;
+  state.hintLevels[key] = lv + 1;
+  state.hintsUsed = Object.values(state.hintLevels).reduce((a, b) => a + b, 0);
+  renderHints();
+  renderProgress();
+  saveNow();
+  toast(`💡 已发放第 ${lv + 1} 档提示`);
+}
+
+/* =========================================================
+   阶段7 · 结案报告
+   ========================================================= */
+function openReport(peek){
+  const body = document.getElementById('reportBody');
+  const s = slotStats();
+  let rows = '';
+  [0,1,2,3].forEach(cid => {
+    Object.keys(state.slots[cid]).forEach(st => {
+      if(!ANSWERS[cid] || !ANSWERS[cid][st]) return;
+      const sl = state.slots[cid][st];
+      if(sl.status !== 'confirmed') return;
+      const ev = (sl.evidence || []).map(id => state.notes.find(n => n.id === id)).filter(Boolean);
+      rows += `<div class="report-row">
+        <div class="report-q">${QUESTIONS[cid + '.' + st] || '待确认事项'}</div>
+        <div class="report-a">${slotDisplayValue(cid, st)}</div>
+        <div class="report-ev">${
+          ev.length
+            ? ev.map(n => `<div><span class="rq">据《${n.source}》</span>「${n.text}」</div>`).join('')
+            : '<div><span class="rq">—</span>未引证据</div>'
+        }</div>
+      </div>`;
+    });
+  });
+  if(!rows) rows = '<div class="report-q">尚无已确认结论。</div>';
+  const mins = Math.max(1, Math.round((Date.now() - state.startedAt) / 60000));
+  body.innerHTML = rows + `<div class="report-stats">
+      <span>结论 <b>${s.done}/${s.total}</b></span>
+      <span>驳回 <b>${state.failCount}</b> 次</span>
+      <span>提示 <b>${state.hintsUsed}</b> 档</span>
+      <span>在案 <b>${mins}</b> 分钟</span>
+      <span>评级 <b>${grade()}</b></span>
+    </div>`;
+  document.getElementById('reportModal').classList.add('on');
+  playClick();
+}
+function grade(){
+  const pen = state.failCount + state.hintsUsed * 2;
+  if(pen === 0) return '甲等 · 无一驳回';
+  if(pen <= 3) return '乙等 · 稍有踌躇';
+  if(pen <= 8) return '丙等 · 反复推敲';
+  return '丁等 · 屡驳屡试';
+}
+function closeReport(){
+  document.getElementById('reportModal').classList.remove('on');
+}
+function submitReport(){
+  closeReport();
+  state.reportSeen = true;
+  saveNow();
+  playStamp();
+  triggerFinal();
+}
+
+/* =========================================================
+   阶段11 · 设置 / 全屏笔记 / 移动端
+   ========================================================= */
+function openSettings(){
+  const s = slotStats();
+  const sa = document.getElementById('setAudioState');
+  if(sa) sa.textContent = state.audioOn ? 'AUDIO: ON' : 'AUDIO: OFF';
+  const ss = document.getElementById('setSaveState');
+  if(ss) ss.textContent = state.saveReady ? '浏览时自动保存至本机' : '尚未启用';
+  const st = document.getElementById('setStatLine');
+  if(st) st.textContent = `结论 ${s.done}/${s.total} · 案卷 ${state.unlockedDocs.size}/${DOCS.length} · 笔记 ${state.notes.length}`;
+  document.getElementById('settingsModal').classList.add('on');
+  playClick();
+}
+function closeSettings(){
+  document.getElementById('settingsModal').classList.remove('on');
+}
+function resetInvestigation(){
+  openMiniConfirm('重置调查', '将清除全部笔记、结论与解封进度，从第一份案卷重新开始。此操作不可撤销。', () => {
+    clearSave();
+    state.saveReady = false;
+    location.reload();
+  });
+}
+
+function toggleNotebookFull(){
+  const el = document.getElementById('nbFull');
+  const on = el.classList.toggle('on');
+  if(on){
+    renderNotebook();
+    playClick();
+  }
+}
+function focusCanvas(){
+  playClick();
+  state.zoom = window.innerWidth < 900 ? (window.innerWidth < 520 ? 0.55 : 0.7) : 1;
+  applyZoom();
+  setPane('canvas');
+  const vp = document.getElementById('viewport');
+  if(vp) vp.scrollTo({ left: window.innerWidth < 900 ? 240 : 180, top: 40, behavior: 'smooth' });
+}
+function setPane(pane){
+  document.body.dataset.pane = pane;
+  document.querySelectorAll('.mobile-tabs button').forEach(b => {
+    b.classList.toggle('on', b.dataset.pane === pane);
+  });
+  if(pane === 'canvas') setTimeout(drawLines, 60);
+  if(pane === 'notes') renderNotebook();
+}
+
+/* 触屏/拖选后的浮动操作条 */
+let selText = '';
+function showSelBar(x, y){
+  const bar = document.getElementById('selBar');
+  if(!bar) return;
+  const w = 168, h = 38;
+  let nx = Math.min(Math.max(8, x - w / 2), window.innerWidth - w - 8);
+  let ny = y - h - 10;
+  if(ny < 8) ny = y + 18;
+  bar.style.left = nx + 'px';
+  bar.style.top = ny + 'px';
+  bar.classList.add('on');
+}
+function hideSelBar(){
+  const bar = document.getElementById('selBar');
+  if(bar) bar.classList.remove('on');
+}
+function selAct(act){
+  hideSelBar();
+  if(!selText) return;
+  if(act === 'collect') collectSelection(selText);
+  else if(act === 'search') searchInGame(selText);
 }
 
 /* =========================================================
@@ -2046,17 +2961,33 @@ function toast(msg){
    初始化
    ========================================================= */
 function init(){
-  initUnlocks();
+  /* 读档：有档则恢复，无档则全新开局 */
+  const loaded = loadSave();
+  if(!loaded || state.unlockedDocs.size === 0) initUnlocks();
+
   renderArchiveList();
   renderNotebook();
   [0,1,2,3].forEach(cid => {
     Object.keys(state.slots[cid]).forEach(st => renderSlot(cid, st));
+    renderPhoto(cid);
   });
   renderFailCount();
+  renderProgress();
+
+  /* 移动端：默认落在关系图，并给一个可读的初始缩放 */
+  document.body.dataset.pane = 'canvas';
+  if(window.innerWidth < 900){
+    state.zoom = window.innerWidth < 520 ? 0.55 : 0.7;
+    document.querySelectorAll('.mobile-tabs button').forEach(b => {
+      b.classList.toggle('on', b.dataset.pane === 'canvas');
+    });
+  }
   applyZoom();
+  updateSysState();
+
   setTimeout(drawLines, 100);
   setTimeout(drawLines, 500);
-  window.addEventListener('resize', drawLines);
+  window.addEventListener('resize', () => { drawLines(); });
   window.addEventListener('load', drawLines);
 
   /* 文本选择 + 右键菜单 */
@@ -2066,14 +2997,16 @@ function init(){
     if(text.length === 0){ hideCtxMenu(); return; }
     e.preventDefault();
     ctxSelected = text;
+    hideSelBar();
     showCtxMenu(e.clientX, e.clientY, text);
   });
   document.addEventListener('click', (e) => {
     if(ctxMenu.style.display === 'block' && !ctxMenu.contains(e.target)){
       hideCtxMenu();
     }
+    if(!e.target.closest || !e.target.closest('#selBar')) hideSelBar();
   });
-  document.addEventListener('scroll', hideCtxMenu, true);
+  document.addEventListener('scroll', () => { hideCtxMenu(); hideSelBar(); }, true);
   ctxMenu.querySelectorAll('.ctx-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const act = btn.dataset.act;
@@ -2082,6 +3015,42 @@ function init(){
       else if(act === 'collect') collectSelection(ctxSelected);
     });
   });
+
+  /* 拖选/触屏选中后浮出操作条（移动端无右键，此为替代入口） */
+  document.addEventListener('mouseup', (e) => {
+    if(e.button === 2) return;   /* 右键交给右键菜单 */
+    setTimeout(() => {
+      const sel = window.getSelection();
+      const text = sel ? sel.toString().trim() : '';
+      if(!text || text.length > 80) { hideSelBar(); return; }
+      if(!e.target.closest || !e.target.closest('#docPaper')) { hideSelBar(); return; }
+      selText = text;
+      showSelBar(e.clientX, e.clientY);
+    }, 10);
+  });
+  document.addEventListener('touchend', (e) => {
+    const t = e.changedTouches && e.changedTouches[0];
+    setTimeout(() => {
+      const sel = window.getSelection();
+      const text = sel ? sel.toString().trim() : '';
+      if(!text || text.length > 80) { hideSelBar(); return; }
+      selText = text;
+      showSelBar(t ? t.clientX : window.innerWidth / 2, t ? t.clientY : 200);
+    }, 60);
+  });
+
+  /* 存档就绪 */
+  state.saveReady = true;
+  saveNow();
+
+  /* 6.5 已结案：重开页面直接落在结案页 / 陈词页 */
+  if(state.finished){
+    if(state.reportSeen){
+      setTimeout(() => { renderShipGrid(); document.getElementById('finalModal').classList.add('on'); }, 400);
+    } else {
+      setTimeout(() => openReport(), 400);
+    }
+  }
 }
 init();
 </script>
