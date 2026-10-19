@@ -108,6 +108,14 @@
   .arch-item .ai-date{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--fg4)}
   .arch-item.done .ai-title{color:var(--fg3)}
   .arch-item.done .ai-title::after{content:' ✓';color:var(--seal);font-size:10px}
+  .arch-item.locked{opacity:.6;cursor:not-allowed;border-left-color:#333}
+  .arch-item.locked:hover{background:transparent;border-left-color:#333}
+  .arch-item.locked .ai-title{color:#6a6a6a}
+  .arch-item.locked .ai-title::before{content:'🔒 ';font-size:9px}
+  .arch-item.locked .ai-hint{
+    font-family:'Space Mono',monospace;font-size:9px;color:#8a6a3a;
+    margin-top:4px;letter-spacing:.02em;line-height:1.5;
+  }
   @media(max-width:900px){.archive-list{display:none}}
 
   /* ---- 中间：画布 ---- */
@@ -434,6 +442,13 @@
     font-size:9px;font-weight:900;border-radius:8px;
     display:flex;align-items:center;justify-content:center;
     padding:0 4px;border:1.5px solid #000;
+  }
+  .circle-btn .badge.pop{animation:badgePop .55s ease}
+  @keyframes badgePop{
+    0%{transform:scale(1)}
+    40%{transform:scale(1.55)}
+    70%{transform:scale(.92)}
+    100%{transform:scale(1)}
   }
   .bottombar-status{
     margin-left:auto;font-family:'Space Mono',monospace;
@@ -1095,7 +1110,7 @@
 <footer class="bottombar">
   <button class="circle-btn" onclick="openArchive()" title="案卷">
     📁
-    <span class="badge" id="archiveBadge">4</span>
+    <span class="badge" id="archiveBadge">·</span>
   </button>
   <button class="circle-btn primary" onclick="playClick()" title="关系图">🕸️</button>
   <button class="circle-btn" onclick="playClick()" title="检索">🔍</button>
@@ -1215,6 +1230,7 @@ const state = {
   audioCtx: null,
   notes: [],           // { id, text, source, time, used }
   readDocs: new Set(),
+  unlockedDocs: new Set(),   // 已解封案卷索引
   slots: {
     0: { role: {value:null,status:'empty',evidence:[]}, wound: {value:null,status:'empty',evidence:[]} },
     1: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} },
@@ -1260,6 +1276,7 @@ const DOCS = [
     id: 'd1',
     title: '会办海防密函',
     date: '光绪十年七月初三 · 未时前',
+    locked: false,
     body: `
       <p class="no-indent"><strong>朝廷上谕摘录：</strong>“法夷游弋马江，战和未定。切不可先发制人，致招开端。”</p>
       <p>会办福建海防大臣 张佩纶 下达严令：各舰原锚不动，违者按军法处决。</p>
@@ -1271,6 +1288,9 @@ const DOCS = [
     id: 'd2',
     title: '备忘口供记录',
     date: '光绪十年七月初三 · 战后',
+    locked: true,
+    unlockWhen: { card: 1 },
+    unlockHint: '需先确认「关联要员 A」的姓名',
     body: `
       <p class="no-indent"><strong>幸存营兵证言：</strong>“战前老掌柜请移锚罗星塔，水师提督 张成 怒斥不许。”</p>
       <p>及至未时炮响，提督 福建水师提督 张成见形势大乱，未登舰指挥即仓皇逃往岸上避难。</p>
@@ -1281,6 +1301,9 @@ const DOCS = [
     id: 'd3',
     title: '损管血书残页',
     date: '光绪十年七月初三 · 未时',
+    locked: true,
+    unlockWhen: { card: 2 },
+    unlockHint: '需先确认「关联要员 B」的姓名',
     body: `
       <p class="no-indent"><strong>损管日志残页：</strong>“敌鱼雷艇逼近右舷，旗舰管带 麦元良 屹立飞檐。”</p>
       <p>管带 扬武号管带 麦元良与老掌柜死守尾炮，命中法舰后同沉江底。</p>
@@ -1291,6 +1314,9 @@ const DOCS = [
     id: 'd4',
     title: '老掌柜异样解剖记录',
     date: '光绪十年八月 · 绝密',
+    locked: true,
+    unlockWhen: { card: 3 },
+    unlockHint: '需先确认「关联要员 C」的姓名',
     body: `
       <p class="no-indent"><strong>绝密打捞剖析：</strong>“老掌柜沉水处位于江心，打捞发现其躯体异样：”</p>
       <p>一、并非血肉之躯，实为 闽江第一号木胁铁壳舰。</p>
@@ -1401,15 +1427,61 @@ function drawLines(){
 /* =========================================================
    左侧卷宗列表
    ========================================================= */
+function isDocUnlocked(i){
+  return state.unlockedDocs.has(i);
+}
+
+/* 初始解封：locked=false 的案卷 */
+function initUnlocks(){
+  DOCS.forEach((d, i) => { if(!d.locked) state.unlockedDocs.add(i); });
+}
+
+/* 结论确认后检查是否满足新案卷解封条件 */
+function checkUnlocks(){
+  const newly = [];
+  DOCS.forEach((d, i) => {
+    if(isDocUnlocked(i)) return;
+    if(d.unlockWhen && d.unlockWhen.card !== undefined && isCardSolved(d.unlockWhen.card)){
+      state.unlockedDocs.add(i);
+      newly.push(d);
+    }
+  });
+  if(newly.length === 0) return;
+  renderArchiveList();
+  renderArchiveBadge(true);
+  toast('📂 新案卷解封：' + newly.map(d => '《' + d.title + '》').join('、'));
+}
+
 function renderArchiveList(){
   const el = document.getElementById('archiveList');
-  el.innerHTML = DOCS.map((d, i) => `
+  el.innerHTML = DOCS.map((d, i) => {
+    if(!isDocUnlocked(i)){
+      return `
+    <div class="arch-item locked" onclick="openArchive(${i})">
+      <div class="ai-title">${d.title}</div>
+      <div class="ai-hint">${d.unlockHint || '尚未解封'}</div>
+    </div>`;
+    }
+    return `
     <div class="arch-item ${state.readDocs.has(d.id) ? 'done' : ''}"
          onclick="openArchive(${i})">
       <div class="ai-title">${d.title}</div>
       <div class="ai-date mono">${d.date}</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
+  renderArchiveBadge();
+}
+
+/* 底栏徽章：已解封 / 总数 */
+function renderArchiveBadge(flash){
+  const b = document.getElementById('archiveBadge');
+  if(!b) return;
+  b.textContent = `${state.unlockedDocs.size}/${DOCS.length}`;
+  if(flash){
+    b.classList.remove('pop');
+    void b.offsetWidth;      // 重置动画
+    b.classList.add('pop');
+  }
 }
 
 /* =========================================================
@@ -1417,6 +1489,7 @@ function renderArchiveList(){
    ========================================================= */
 function openArchive(idx){
   if(idx === undefined) idx = state.activeDoc;
+  if(!isDocUnlocked(idx)){ toast('此案卷尚未解封，需先完成相关推理。'); return; }
   playClick();
   state.activeDoc = idx;
   const d = DOCS[idx];
@@ -1499,6 +1572,7 @@ function searchInGame(q){
   const qn = q.replace(/\s+/g,'');
   const results = [];
   DOCS.forEach((d, i) => {
+    if(!isDocUnlocked(i)) return;           // 仅检索已解封案卷
     const plain = d.body.replace(/<[^>]+>/g,'').replace(/\s+/g,'');
     if(plain.includes(qn)){
       results.push({ i, title: d.title, snippet: makeSnippet(d, q) });
@@ -1506,7 +1580,7 @@ function searchInGame(q){
   });
   const list = document.getElementById('searchList');
   if(results.length === 0){
-    list.innerHTML = `<div class="search-empty">案卷中未检索到「${q}」</div>`;
+    list.innerHTML = `<div class="search-empty">已解封案卷中未检索到「${q}」</div>`;
   } else {
     list.innerHTML = results.map(r => `
       <div class="search-item" onclick="openArchive(${r.i}); closeSearch()">
@@ -1806,6 +1880,7 @@ function confirmSlot(){
   renderSlot(cid, st);
   renderNotebook();
   checkCardComplete(cid);
+  checkUnlocks();
   checkVictory();
 }
 function unlockSlot(cid, st){
@@ -1971,6 +2046,7 @@ function toast(msg){
    初始化
    ========================================================= */
 function init(){
+  initUnlocks();
   renderArchiveList();
   renderNotebook();
   [0,1,2,3].forEach(cid => {
