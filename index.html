@@ -88,13 +88,36 @@
 
   /* ========== 主体 ========== */
   .workspace{flex:1;display:flex;overflow:hidden;position:relative}
+  :root{--chrome-top:58px}
 
-  /* ---- 左侧：卷宗列表 ---- */
+  /* ---- 抽屉：卷宗（左） ---- */
   .archive-list{
-    width:220px;flex-shrink:0;
+    position:fixed;left:0;top:var(--chrome-top);bottom:0;width:300px;
     background:#050505;border-right:2px solid var(--line);
-    padding:14px 12px;overflow-y:auto;z-index:20;
+    padding:14px 12px;overflow-y:auto;z-index:70;
+    transform:translateX(-104%);transition:transform .24s ease;
+    box-shadow:16px 0 34px rgba(0,0,0,.65);
   }
+  body.drawer-archive .archive-list{transform:none}
+  .drawer-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--line);
+  }
+  .drawer-head h2{
+    font-family:'Space Mono',monospace;font-size:10.5px;
+    color:var(--fg3);letter-spacing:.15em;
+  }
+  .drawer-close{
+    font-family:'Space Mono',monospace;font-size:13px;line-height:1;
+    color:var(--fg3);padding:2px 6px;border:1px solid transparent;border-radius:2px;
+  }
+  .drawer-close:hover{color:var(--white);border-color:var(--line2)}
+  .drawer-scrim{
+    position:fixed;left:0;right:0;top:var(--chrome-top);bottom:0;z-index:65;
+    background:rgba(0,0,0,.62);opacity:0;pointer-events:none;transition:opacity .2s;
+  }
+  body.drawer-archive .drawer-scrim,
+  body.drawer-notes .drawer-scrim{opacity:1;pointer-events:auto}
   .archive-list h2{
     font-family:'Space Mono',monospace;font-size:10.5px;
     color:var(--fg3);letter-spacing:.15em;margin-bottom:10px;
@@ -118,13 +141,8 @@
     font-family:'Space Mono',monospace;font-size:9px;color:#8a6a3a;
     margin-top:4px;letter-spacing:.02em;line-height:1.5;
   }
-  @media(max-width:1080px){
-    .canvas{grid-template-columns:1fr;max-width:620px;padding:20px 16px 50px}
-    .card.target{grid-column:auto;justify-self:stretch;max-width:none}
-  }
-  @media(max-width:900px){.archive-list{display:none}}
 
-  /* ---- 中间：案情板 ---- */
+  /* ---- 中间：调查树 ---- */
   .viewport{
     flex:1;overflow:auto;position:relative;background-color:#080808;
     background-image:
@@ -134,9 +152,21 @@
   }
   .canvas{
     width:100%;max-width:1160px;margin:0 auto;
-    padding:28px 26px 70px;
+    padding:28px 26px 70px;position:relative;
     display:grid;grid-template-columns:repeat(3,1fr);
-    gap:18px;align-items:start;
+    column-gap:26px;row-gap:76px;align-items:start;
+  }
+  /* 调查树连线层 */
+  .tree-lines{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+  .tree-lines path{fill:none;stroke:#333;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s}
+  .tree-lines path.done{stroke:#7a7a7a}
+  .tree-lines circle{fill:#111;stroke:#444;stroke-width:1.5;transition:fill .4s,stroke .4s}
+  .tree-lines circle.done{fill:#eaeaea;stroke:#eaeaea}
+
+  @media(max-width:1080px){
+    .canvas{grid-template-columns:1fr;max-width:620px;padding:20px 16px 50px;row-gap:18px}
+    .card.target{grid-column:auto;justify-self:stretch;max-width:none}
+    .tree-lines{display:none}
   }
 
   /* ---- 卡片 ---- */
@@ -145,6 +175,7 @@
     border:2px solid var(--line2);border-radius:4px;
     transition:border-color .25s,box-shadow .25s;
     box-shadow:4px 4px 0 0 rgba(255,255,255,.06);
+    position:relative;z-index:1;
   }
   .card:hover{border-color:#666;box-shadow:4px 4px 0 0 rgba(255,255,255,.12)}
   .card.target{
@@ -250,17 +281,11 @@
   }
   .person-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px;justify-content:center}
   .person-meta{
-    display:flex;flex-direction:column;gap:9px;
-    border-top:1px dashed var(--line2);padding-top:10px;
+    display:none;flex-direction:column;gap:9px;
+    border-top:1px dashed var(--line2);padding-top:11px;margin-top:12px;
   }
-  .af-val{
-    font-size:11.5px;line-height:1.6;color:var(--fg2);
-    letter-spacing:.02em;word-break:break-word;white-space:pre-line;
-  }
-  .af-val.pending{
-    font-family:'Space Mono',monospace;font-size:9.5px;
-    color:#4e4e4e;letter-spacing:.1em;
-  }
+  .person-meta.on{display:flex;animation:metaIn .34s ease both}
+  @keyframes metaIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
   .af-opt{
     font-family:'Space Mono',monospace;font-size:8px;color:var(--fg4);
     border:1px solid #333;border-radius:2px;padding:0 4px;margin-left:4px;
@@ -275,13 +300,15 @@
   .card.complete{border-color:#888;box-shadow:4px 4px 0 0 rgba(255,255,255,.25)}
   .card.target.complete{border-color:var(--white);box-shadow:6px 6px 0 0 rgba(255,255,255,.9)}
 
-  /* ---- 右侧栏 ---- */
+  /* ---- 右侧栏（抽屉） ---- */
   .sidebar{
-    width:340px;flex-shrink:0;background:#050505;
-    border-left:2px solid var(--line);padding:14px;
-    display:flex;flex-direction:column;gap:14px;overflow-y:auto;z-index:20;
+    position:fixed;right:0;top:var(--chrome-top);bottom:0;width:360px;
+    background:#050505;border-left:2px solid var(--line);padding:14px;
+    display:flex;flex-direction:column;gap:14px;overflow-y:auto;z-index:70;
+    transform:translateX(104%);transition:transform .24s ease;
+    box-shadow:-16px 0 34px rgba(0,0,0,.65);
   }
-  @media(max-width:900px){.sidebar{display:none}}
+  body.drawer-notes .sidebar{transform:none}
 
   .sidebar-card{
     background:var(--white);color:#000;border-radius:3px;
@@ -1008,18 +1035,20 @@
   #miniConfirm{z-index:320}
 
   @media(max-width:900px){
+    :root{--chrome-top:102px}
     .mobile-tabs{display:flex}
-    .archive-list{display:none;width:100%;border-right:none}
-    .sidebar{display:none;width:100%;border-left:none}
-    body[data-pane="list"]  .archive-list{display:block}
-    body[data-pane="notes"] .sidebar{display:flex}
-    .viewport{display:none}
-    body[data-pane="canvas"] .viewport{display:block}
+    .archive-list{width:86vw;max-width:320px}
+    .sidebar{width:88vw;max-width:380px}
     .topbar{padding:0 10px;gap:8px}
     .notebook{max-height:none}
   }
   @media(max-width:640px){
     .title-banner{display:none}
+    .btn-lbl{display:none}
+    .topbar{gap:6px}
+    .audio-btn{padding:6px 8px;gap:4px}
+    .top-search{margin-left:0;flex:1 1 90px;max-width:none}
+    .topbar-right{margin-left:6px;gap:6px}
     .report-head h2{font-size:15px}
     .report-seal{width:52px;height:52px;font-size:9.5px;right:14px;top:10px}
     .report-body,.report-head,.report-foot{padding-left:16px;padding-right:16px}
@@ -1042,9 +1071,15 @@
   </div>
 
   <div class="topbar-right">
+    <button class="audio-btn mono" onclick="toggleDrawer('archive')" title="卷宗列表">
+      📁 <span class="btn-lbl">卷宗</span> <span id="archCountTop" style="color:var(--fg4)">0/0</span>
+    </button>
+    <button class="audio-btn mono" onclick="toggleDrawer('notes')" title="笔记本与进度">
+      📝 <span class="btn-lbl">笔记</span> <span id="noteCountTop" style="color:var(--fg4)">0</span>
+    </button>
     <button class="audio-btn mono" id="soundBtn" onclick="toggleAudio()" title="音效开关">
       <span id="soundIcon">🔇</span>
-      <span id="soundText">AUDIO</span>
+      <span id="soundText" class="btn-lbl">AUDIO</span>
     </button>
     <button class="audio-btn mono" onclick="openSettings()" title="调查设置">⚙</button>
   </div>
@@ -1052,23 +1087,31 @@
 
 <!-- 移动端页签 -->
 <nav class="mobile-tabs">
-  <button data-pane="list" onclick="setPane('list')">📁 卷宗</button>
-  <button data-pane="canvas" onclick="setPane('canvas')">🗂️ 案情板</button>
-  <button data-pane="notes" onclick="setPane('notes')">📝 笔记</button>
+  <button data-pane="list" onclick="toggleDrawer('archive')">📁 卷宗</button>
+  <button data-pane="canvas" onclick="closeDrawers()">🗂️ 调查树</button>
+  <button data-pane="notes" onclick="toggleDrawer('notes')">📝 笔记</button>
 </nav>
+
+<!-- 抽屉遮罩 -->
+<div class="drawer-scrim" onclick="closeDrawers()"></div>
 
 <!-- ========== 主体 ========== -->
 <div class="workspace">
 
-  <!-- 左侧：卷宗列表 -->
+  <!-- 卷宗抽屉 -->
   <aside class="archive-list">
-    <h2>ARCHIVE · 卷宗</h2>
+    <div class="drawer-head">
+      <h2>ARCHIVE · 卷宗</h2>
+      <button class="drawer-close" type="button" onclick="closeDrawers()" title="收起">✕</button>
+    </div>
     <div id="archiveList"></div>
   </aside>
 
-  <!-- 中间：案情板 -->
+  <!-- 中间：调查树 -->
   <div class="viewport" id="viewport">
     <div class="canvas" id="canvas">
+      <svg class="tree-lines" id="treeLines" aria-hidden="true"></svg>
+
 
       <!-- 目标卡 -->
       <div class="card target" id="card-0">
@@ -1132,146 +1175,10 @@
         </div>
       </div>
 
-      <!-- 人物卡 1 -->
-      <div class="card person c1" id="card-1">
-        <div class="card-header">
-          <span>关联要员 A</span>
-          <span class="tag mono">PERSON</span>
-        </div>
-        <div class="card-body">
-          <div class="person-row">
-            <div class="person-photo" id="photo-1">
-              <span class="ph-q">?</span>
-              <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
-            </div>
-            <div class="person-fields">
-              <div>
-                <div class="field-label"><span>真实姓名 / NAME</span></div>
-                <div class="slot" id="slot-1-name" data-cid="1" data-st="name">
-                  <div class="slot-main" onclick="openPicker(1,'name')">
-                    <span class="slot-icon">＋</span>
-                    <span class="slot-text">[ 未知姓名 ]</span>
-                    <span class="slot-badge" style="display:none"></span>
-                  </div>
-                  <div class="slot-actions">
-                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(1,'name')">确认</button>
-                    <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(1,'name')">撤回</button>
-                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(1,'name')">解除</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="person-meta">
-            <div>
-              <div class="field-label"><span>职位 / POST</span></div>
-              <div class="af-val pending" id="af-1-post">〔待身份确认〕</div>
-            </div>
-            <div>
-              <div class="field-label"><span>入船政 / JOINED</span></div>
-              <div class="af-val pending" id="af-1-join">〔待身份确认〕</div>
-            </div>
-            <div>
-              <div class="field-label"><span>卒于 / DIED<span class="af-opt">选填</span></span></div>
-              <div class="af-val pending" id="af-1-died">〔待身份确认〕</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 人物卡 2 -->
-      <div class="card person c2" id="card-2">
-        <div class="card-header">
-          <span>关联要员 B</span>
-          <span class="tag mono">PERSON</span>
-        </div>
-        <div class="card-body">
-          <div class="person-row">
-            <div class="person-photo" id="photo-2">
-              <span class="ph-q">?</span>
-              <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
-            </div>
-            <div class="person-fields">
-              <div>
-                <div class="field-label"><span>真实姓名 / NAME</span></div>
-                <div class="slot" id="slot-2-name" data-cid="2" data-st="name">
-                  <div class="slot-main" onclick="openPicker(2,'name')">
-                    <span class="slot-icon">＋</span>
-                    <span class="slot-text">[ 未知姓名 ]</span>
-                    <span class="slot-badge" style="display:none"></span>
-                  </div>
-                  <div class="slot-actions">
-                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(2,'name')">确认</button>
-                    <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(2,'name')">撤回</button>
-                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(2,'name')">解除</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="person-meta">
-            <div>
-              <div class="field-label"><span>职位 / POST</span></div>
-              <div class="af-val pending" id="af-2-post">〔待身份确认〕</div>
-            </div>
-            <div>
-              <div class="field-label"><span>入船政 / JOINED</span></div>
-              <div class="af-val pending" id="af-2-join">〔待身份确认〕</div>
-            </div>
-            <div>
-              <div class="field-label"><span>卒于 / DIED<span class="af-opt">选填</span></span></div>
-              <div class="af-val pending" id="af-2-died">〔待身份确认〕</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 人物卡 3 -->
-      <div class="card person c3" id="card-3">
-        <div class="card-header">
-          <span>关联要员 C</span>
-          <span class="tag mono">PERSON</span>
-        </div>
-        <div class="card-body">
-          <div class="person-row">
-            <div class="person-photo" id="photo-3">
-              <span class="ph-q">?</span>
-              <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
-            </div>
-            <div class="person-fields">
-              <div>
-                <div class="field-label"><span>真实姓名 / NAME</span></div>
-                <div class="slot" id="slot-3-name" data-cid="3" data-st="name">
-                  <div class="slot-main" onclick="openPicker(3,'name')">
-                    <span class="slot-icon">＋</span>
-                    <span class="slot-text">[ 未知姓名 ]</span>
-                    <span class="slot-badge" style="display:none"></span>
-                  </div>
-                  <div class="slot-actions">
-                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(3,'name')">确认</button>
-                    <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(3,'name')">撤回</button>
-                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(3,'name')">解除</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="person-meta">
-            <div>
-              <div class="field-label"><span>职位 / POST</span></div>
-              <div class="af-val pending" id="af-3-post">〔待身份确认〕</div>
-            </div>
-            <div>
-              <div class="field-label"><span>入船政 / JOINED</span></div>
-              <div class="af-val pending" id="af-3-join">〔待身份确认〕</div>
-            </div>
-            <div>
-              <div class="field-label"><span>卒于 / DIED<span class="af-opt">选填</span></span></div>
-              <div class="af-val pending" id="af-3-died">〔待身份确认〕</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- 人物卡 A / B / C（结构由 JS 生成） -->
+      <div class="card person c1" id="card-1"></div>
+      <div class="card person c2" id="card-2"></div>
+      <div class="card person c3" id="card-3"></div>
 
     </div>
   </div>
@@ -1279,12 +1186,17 @@
   <!-- 右侧：待办 + 笔记本 -->
   <aside class="sidebar">
 
+    <div class="drawer-head">
+      <h2>NOTEBOOK · 笔记与进度</h2>
+      <button class="drawer-close" type="button" onclick="closeDrawers()" title="收起">✕</button>
+    </div>
+
     <div class="sidebar-card">
       <div class="sidebar-card-head">
         <h3>调查须知 BRIEFING</h3>
         <span class="tag mono">GUIDE</span>
       </div>
-      <p>拖选案卷文字，<b>收藏</b>入笔记本，再归位到<b>案情板</b>并引证确认。卡住可查<b>提示</b>，或用顶部检索框搜档案索引词解封新卷。</p>
+      <p>拖选案卷文字，<b>收藏</b>入笔记本，再归位到<b>调查树</b>并引证确认。卡住可查<b>提示</b>，或用顶部检索框搜档案索引词解封新卷。</p>
     </div>
 
     <div>
@@ -1521,9 +1433,9 @@ const state = {
   unlockedDocs: new Set(),   // 已解封案卷索引
   slots: {
     0: { role: {value:null,status:'empty',evidence:[]}, wound: {value:null,status:'empty',evidence:[]} },
-    1: { name: {value:null,status:'empty',evidence:[]} },
-    2: { name: {value:null,status:'empty',evidence:[]} },
-    3: { name: {value:null,status:'empty',evidence:[]} }
+    1: { name: {value:null,status:'empty',evidence:[]}, post: {value:null,status:'empty',evidence:[]}, join: {value:null,status:'empty',evidence:[]}, died: {value:null,status:'empty',evidence:[]} },
+    2: { name: {value:null,status:'empty',evidence:[]}, post: {value:null,status:'empty',evidence:[]}, join: {value:null,status:'empty',evidence:[]}, died: {value:null,status:'empty',evidence:[]} },
+    3: { name: {value:null,status:'empty',evidence:[]}, post: {value:null,status:'empty',evidence:[]}, join: {value:null,status:'empty',evidence:[]}, died: {value:null,status:'empty',evidence:[]} }
   },
   activeCard: null,
   activeSlot: null,
@@ -1543,29 +1455,92 @@ const ANSWERS = {
     role:  { values: ['闽江第一号木胁铁壳舰', '福建水师旗舰'], evidence: ['木胁铁壳舰','闽江第一号','福建水师旗舰','旗舰'] },
     wound: { values: ['右舷水下贯穿破洞'],                    evidence: ['右舷水下','贯穿破洞','破洞'] }
   },
-  1: { name: { values: ['张佩纶'], evidence: ['张佩纶','会办福建海防','会办大臣'] } },
-  2: { name: { values: ['张成'],   evidence: ['张成','水师提督'] } },
-  3: { name: { values: ['麦元良'], evidence: ['麦元良','旗舰管带'] } }
-};
-
-/* 人物档案：身份确认后由船政旧档补录（不参与判据，仅作档案完整度） */
-const PERSON_FILES = {
   1: {
-    post: '会办福建海防大臣 · 兼署船政大臣\n三品卿衔',
-    join: '光绪十年（1884）\n到闽会办 · 兼署船政大臣',
-    died: '光绪二十九年（1903）'
+    name: { values: ['张佩纶'], evidence: ['张佩纶','会办福建海防'] },
+    post: { values: ['会办福建海防大臣','会办大臣'], evidence: ['会办福建海防','会办大臣','兼署船政大臣'] },
+    join: { values: ['光绪十年','1884'], evidence: ['光绪十年到闽','到闽会办'] },
+    died: { values: ['光绪二十九年','1903'], evidence: ['光绪二十九年'], optional: true }
   },
   2: {
-    post: '闽安镇副将（从二品）\n统带福建水师',
-    join: '同治六年（1867）\n考入船政后学堂驾驶班',
-    died: '不详\n战后定斩监候，解刑部监禁'
+    name: { values: ['张成'], evidence: ['张成','水师提督'] },
+    post: { values: ['闽安镇副将','统带福建水师','水师提督'], evidence: ['闽安镇副将','统带福建水师','水师提督'] },
+    join: { values: ['同治六年','1867'], evidence: ['同治六年'] },
+    died: { values: ['斩监候'], evidence: ['斩监候'], optional: true }
   },
   3: {
-    post: '扬武号管带（游击 · 从三品）\n福建水师旗舰',
-    join: '光绪二年（1876）\n船政后学堂驾驶班',
-    died: '光绪十年七月初三（1884）\n马江阵亡'
+    name: { values: ['麦元良'], evidence: ['麦元良','旗舰管带'] },
+    post: { values: ['扬武号管带','扬武管带','旗舰管带'], evidence: ['扬武号管带','扬武管带条','旗舰管带'] },
+    join: { values: ['光绪二年','1876'], evidence: ['光绪二年'] },
+    died: { values: ['光绪十年七月初三','马江阵亡'], evidence: ['七月初三','马江阵亡'], optional: true }
   }
 };
+
+/* 人物卡字段定义：姓名确认前不出现，确认后逐项由玩家从笔记填入 */
+const PERSON_SLOTS = [
+  { st: 'post', label: '职位 / POST',    ph: '[ 待查 ]' },
+  { st: 'join', label: '入船政 / JOINED', ph: '[ 待查 ]' },
+  { st: 'died', label: '卒于 / DIED',    ph: '[ 选填 ]', opt: true }
+];
+
+function slotBlockHTML(cid, st, label, ph, opt){
+  return `<div>
+    <div class="field-label"><span>${label}${opt ? '<span class="af-opt">选填</span>' : ''}</span></div>
+    <div class="slot" id="slot-${cid}-${st}" data-cid="${cid}" data-st="${st}">
+      <div class="slot-main" onclick="openPicker(${cid},'${st}')">
+        <span class="slot-icon">＋</span>
+        <span class="slot-text">${ph}</span>
+        <span class="slot-badge" style="display:none"></span>
+      </div>
+      <div class="slot-actions">
+        <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(${cid},'${st}')">确认</button>
+        <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(${cid},'${st}')">撤回</button>
+        <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(${cid},'${st}')">解除</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function personCardHTML(cid){
+  const fields = PERSON_SLOTS.map(f => slotBlockHTML(cid, f.st, f.label, f.ph, f.opt)).join('');
+  return `
+    <div class="card-header">
+      <span>关联要员 ${'ABC'[cid - 1]}</span>
+      <span class="tag mono">PERSON</span>
+    </div>
+    <div class="card-body">
+      <div class="person-row">
+        <div class="person-photo" id="photo-${cid}">
+          <span class="ph-q">?</span>
+          <span class="ph-art"><span class="ph-body"></span><span class="ph-head"></span><span class="ph-lbl"></span></span>
+        </div>
+        <div class="person-fields">
+          <div>
+            <div class="field-label"><span>真实姓名 / NAME</span></div>
+            <div class="slot" id="slot-${cid}-name" data-cid="${cid}" data-st="name">
+              <div class="slot-main" onclick="openPicker(${cid},'name')">
+                <span class="slot-icon">＋</span>
+                <span class="slot-text">[ 未知姓名 ]</span>
+                <span class="slot-badge" style="display:none"></span>
+              </div>
+              <div class="slot-actions">
+                <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(${cid},'name')">确认</button>
+                <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(${cid},'name')">撤回</button>
+                <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(${cid},'name')">解除</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="person-meta" id="meta-${cid}">${fields}</div>
+    </div>`;
+}
+
+function mountPersonCards(){
+  [1, 2, 3].forEach(cid => {
+    const card = document.getElementById('card-' + cid);
+    if(card) card.innerHTML = personCardHTML(cid);
+  });
+}
 
 /* 九舰 */
 const SHIPS = [
@@ -1639,6 +1614,20 @@ const DOCS = [
       <p>二、右舷水下发现 右舷水下贯穿破洞，系受鱼雷击爆所致。</p>
       <p>三、其职务兼任 福建水师旗舰。</p>
       <p>四、另据船政旧档，此舰或记作 <strong>闽江二号铁肋舰</strong>，与打捞实物勘验不合，存疑备考。</p>
+    `
+  },
+  {
+    id: 'd5',
+    title: '船政员弁履历册',
+    date: '光绪十年 · 船政档案房 残卷',
+    locked: false,
+    keywords: ['履历', '员弁', '后学堂', '卿衔', '斩监候'],
+    body: `
+      <p class="no-indent"><strong>船政员弁履历册（残卷）：</strong>“名册经火，姓名尽焚，仅存职衔条目，可据以补全各员行止。”</p>
+      <p>一、会办大臣条：三品卿衔，光绪十年到闽会办海防，寻兼署船政大臣；光绪二十九年卒于江宁。</p>
+      <p>二、闽安镇副将条：同治六年考入后学堂驾驶班，光绪十年统带福建水师；马江战后定斩监候。</p>
+      <p>三、扬武管带条：光绪二年后学堂驾驶班，光绪十年七月初三马江阵亡。</p>
+      <p>另存帮带条：光绪元年入厂，战前调赴岸防，未在舰上；文案条：光绪六年入厂，十年随节北上。二条与本案无涉。</p>
     `
   }
 ];
@@ -1863,7 +1852,7 @@ function loadSave(){
 }
 
 /* =========================================================
-   卡片完成态（连线已移除，案情板改为自适应网格）
+   卡片完成态（连线已移除，调查树改为自适应网格）
    ========================================================= */
 
 /* =========================================================
@@ -1917,11 +1906,14 @@ function renderArchiveList(){
   renderArchiveBadge();
 }
 
-/* 底栏徽章：已解封 / 总数 */
+/* 卷宗计数：顶栏与徽章同步 */
 function renderArchiveBadge(flash){
+  const txt = `${state.unlockedDocs.size}/${DOCS.length}`;
+  const top = document.getElementById('archCountTop');
+  if(top) top.textContent = txt;
   const b = document.getElementById('archiveBadge');
   if(!b) return;
-  b.textContent = `${state.unlockedDocs.size}/${DOCS.length}`;
+  b.textContent = txt;
   if(flash){
     b.classList.remove('pop');
     void b.offsetWidth;      // 重置动画
@@ -1944,7 +1936,7 @@ function openArchive(idx){
   paper.innerHTML = `
     <button class="btn-close-x" onclick="closeArchive()">✕</button>
     <div class="doc-eyebrow">
-      <span>ARCHIVE · 卷宗${['一','二','三','四'][idx] || ''}</span>
+      <span>ARCHIVE · 卷宗${['一','二','三','四','五','六'][idx] || ''}</span>
       <span class="seal-mark">闽省海防局 · 机密</span>
     </div>
     <div class="doc-title">${d.title}</div>
@@ -2127,6 +2119,8 @@ function renderNotebook(){
 
   const cntEl = document.getElementById('noteCount');
   cntEl.textContent = filter ? `${list.length}/${state.notes.length}` : state.notes.length;
+  const topCnt = document.getElementById('noteCountTop');
+  if(topCnt) topCnt.textContent = state.notes.length;
 
   let html = '';
   if(state.notes.length === 0){
@@ -2145,7 +2139,7 @@ function renderNotebook(){
         .filter(Boolean).join(' ');
       const hint = n.used ? '已归位'
         : (n.cited ? '已引用'
-          : (n.flag === 'doubt' ? '存疑 · 待核' : '点击归位至关系图'));
+          : (n.flag === 'doubt' ? '存疑 · 待核' : '点击归位至调查树'));
       return `
       <div class="note ${cls}" data-id="${n.id}">
         <div class="note-head">
@@ -2171,7 +2165,7 @@ function renderNotebook(){
     el.onclick = (ev) => {
       if(ev.target.closest('.note-tools')) return;
       playClick();
-      toast('请在关系图中点击空槽位，再从笔记本中选择此线索。');
+      toast('请在调查树中点击空槽位，再从笔记本中选择此线索。');
     };
   });
 
@@ -2220,7 +2214,7 @@ function openPicker(cardId, slotType){
 
   const body = document.getElementById('pickerBody');
   const title = document.getElementById('pickerTitle');
-  title.textContent = `从笔记本选择线索 · 卡片${cardId === 0 ? '目标' : cardId}`;
+  title.textContent = `从笔记本选择线索 · ${SLOT_LABEL[cardId + '.' + slotType] || ('卡片' + cardId)}`;
   document.getElementById('pickerModal').classList.add('on');
 
   const current = slot.value;
@@ -2254,9 +2248,9 @@ function closePicker(){
    ========================================================= */
 const SLOT_PLACEHOLDER = {
   0: { role: '[ 未知实体 ]', wound: '[ 未知受创特征 ]' },
-  1: { name: '[ 未知姓名 ]' },
-  2: { name: '[ 未知姓名 ]' },
-  3: { name: '[ 未知姓名 ]' }
+  1: { name: '[ 未知姓名 ]', post: '[ 待查 ]', join: '[ 待查 ]', died: '[ 选填 ]' },
+  2: { name: '[ 未知姓名 ]', post: '[ 待查 ]', join: '[ 待查 ]', died: '[ 选填 ]' },
+  3: { name: '[ 未知姓名 ]', post: '[ 待查 ]', join: '[ 待查 ]', died: '[ 选填 ]' }
 };
 
 /* 卡面展示值：笔记存原文，若能命中答案则展示标准关键词，否则展示原文 */
@@ -2496,6 +2490,7 @@ function isCardSolved(cid){
   const s = state.slots[cid];
   const a = ANSWERS[cid];
   for(const key in a){
+    if(a[key].optional) continue;      // 选填项不入判据
     const slot = s[key];
     if(!slot || slot.status !== 'confirmed') return false;
     if(!textMatchesAnswer(cid, key, slot.value)) return false;
@@ -2505,28 +2500,26 @@ function isCardSolved(cid){
 function checkCardComplete(cid){
   const card = document.getElementById(`card-${cid}`);
   if(card) card.classList.toggle('complete', isCardSolved(cid));
+  renderCardFields(cid);
   renderPhoto(cid);
-  renderPersonFile(cid);
+  scheduleTreeDraw();
 }
 
-/* 人物档案补录：姓名一经确认，职位 / 入船政 / 卒于 由旧档填入 */
-function renderPersonFile(cid){
-  const f = PERSON_FILES[cid];
-  if(!f) return;
-  const solved = isCardSolved(cid);
-  [['post', f.post], ['join', f.join], ['died', f.died]].forEach(([key, val]) => {
-    const el = document.getElementById(`af-${cid}-${key}`);
-    if(!el) return;
-    el.textContent = solved ? val : '〔待身份确认〕';
-    el.classList.toggle('pending', !solved);
-  });
+/* 姓名一经确认，档案字段才出现（值仍需玩家自行填入） */
+function isNamed(cid){
+  const s = state.slots[cid] && state.slots[cid].name;
+  return !!s && s.status === 'confirmed';
+}
+function renderCardFields(cid){
+  const meta = document.getElementById('meta-' + cid);
+  if(meta) meta.classList.toggle('on', isNamed(cid));
 }
 
 /* 阶段9 · 肖像显影 */
 function renderPhoto(cid){
   const el = document.getElementById('photo-' + cid);
   if(!el) return;
-  const solved = isCardSolved(cid);
+  const solved = (cid === 0) ? isCardSolved(0) : isNamed(cid);
   el.classList.toggle('revealed', solved);
   const lbl = el.querySelector('.ph-lbl');
   if(!lbl) return;
@@ -2586,30 +2579,54 @@ function renderShipGrid(){
 const SLOT_LABEL = {
   '0.role': '老掌柜 · 身份', '0.wound': '老掌柜 · 创痕',
   '1.name': '要员 A · 真实姓名',
+  '1.post': '要员 A · 职位',
+  '1.join': '要员 A · 入船政',
+  '1.died': '要员 A · 卒于（选填）',
   '2.name': '要员 B · 真实姓名',
-  '3.name': '要员 C · 真实姓名'
+  '2.post': '要员 B · 职位',
+  '2.join': '要员 B · 入船政',
+  '2.died': '要员 B · 卒于（选填）',
+  '3.name': '要员 C · 真实姓名',
+  '3.post': '要员 C · 职位',
+  '3.join': '要员 C · 入船政',
+  '3.died': '要员 C · 卒于（选填）'
 };
 const QUESTIONS = {
   '0.role': '代号「老掌柜」者，究竟是何实体？',
   '0.wound': '其致命创痕在何处、因何而致？',
   '1.name': '严令各舰不得开火者，何人？',
+  '1.post': '此人在船政担任何职？',
+  '1.join': '此人何时入船政？',
+  '1.died': '此人了局如何、卒于何年？',
   '2.name': '开战后率先弃舰离场者，何人？',
-  '3.name': '死守尾炮、与舰同沉者，何人？'
+  '2.post': '此人在福建水师担任何职？',
+  '2.join': '此人何时入船政？',
+  '2.died': '此人战后的结局如何？',
+  '3.name': '死守尾炮、与舰同沉者，何人？',
+  '3.post': '此人在舰上担任何职？',
+  '3.join': '此人何时入船政？',
+  '3.died': '此人卒于何时何地？'
 };
 
-/* 统计：只计参与判据的槽位（「官职」栏仅供备查，不计入） */
+/* 统计：只计参与判据的槽位（选填项单列） */
 function slotStats(){
-  let total = 0, done = 0, tentative = 0;
+  let total = 0, done = 0, tentative = 0, optDone = 0, optTotal = 0;
   [0,1,2,3].forEach(cid => {
     Object.keys(state.slots[cid]).forEach(st => {
-      if(!ANSWERS[cid] || !ANSWERS[cid][st]) return;
-      total++;
+      const ans = ANSWERS[cid] && ANSWERS[cid][st];
+      if(!ans) return;
       const sl = state.slots[cid][st];
+      if(ans.optional){
+        optTotal++;
+        if(sl.status === 'confirmed' && textMatchesAnswer(cid, st, sl.value)) optDone++;
+        return;
+      }
+      total++;
       if(sl.status === 'confirmed' && textMatchesAnswer(cid, st, sl.value)) done++;
       else if(sl.status === 'tentative') tentative++;
     });
   });
-  return { total, done, tentative };
+  return { total, done, tentative, optDone, optTotal };
 }
 
 function renderProgress(){
@@ -2669,6 +2686,51 @@ const HINTS = {
     '《损管血书残页》记着最后死守尾炮的人。',
     '「旗舰管带」四字之后的名字。',
     '麦元良。帮带「麦元亮」战前已调岸防，勿混。'
+  ],
+  '1.post': [
+    '他既以朝廷之尊严令各舰不得开火，职权必在会办之位。',
+    '《会办海防密函》落款处写着他的差遣。',
+    '「会办福建海防大臣」——选中此六字收藏后填入。'
+  ],
+  '1.join': [
+    '他入船政之年，见《船政员弁履历册》会办大臣条。',
+    '条目里写着「光绪十年到闽会办海防」。',
+    '光绪十年（1884）。'
+  ],
+  '1.died': [
+    '卒年不在战报中，履历册会办大臣条末句有载。',
+    '此人未死于马江，二十年后卒于江宁。',
+    '光绪二十九年（1903）。'
+  ],
+  '2.post': [
+    '他统带的是整个福建水师，非一船之管带。',
+    '履历册闽安镇副将条写明其军职与统带之责。',
+    '「闽安镇副将」，兼「统带福建水师」。'
+  ],
+  '2.join': [
+    '履历册闽安镇副将条开头即其入学年份。',
+    '条目作「同治六年考入后学堂驾驶班」。',
+    '同治六年（1867）。'
+  ],
+  '2.died': [
+    '战后追责，此人未死于此役，而是定罪候决。',
+    '履历册末句记其战后处置。',
+    '「斩监候」——只填此三字亦可。'
+  ],
+  '3.post': [
+    '死守尾炮者，是扬武号一舰之长。',
+    '履历册「扬武管带条」即为此人。',
+    '「扬武号管带」，亦即旗舰管带。'
+  ],
+  '3.join': [
+    '履历册扬武管带条开头的年份。',
+    '条目作「光绪二年后学堂驾驶班」。',
+    '光绪二年（1876）。'
+  ],
+  '3.died': [
+    '损管残页与履历册都记了那一天。',
+    '航迹止于马江，与舰同沉。',
+    '「光绪十年七月初三，马江阵亡」。'
   ]
 };
 
@@ -2811,14 +2873,73 @@ function resetInvestigation(){
   });
 }
 
-function setPane(pane){
+/* =========================================================
+   抽屉：卷宗 / 笔记（默认全部隐藏）
+   ========================================================= */
+function toggleDrawer(which){
+  const open = document.body.classList.contains('drawer-' + which);
+  closeDrawers();
+  if(!open){
+    document.body.classList.add('drawer-' + which);
+    if(which === 'notes') renderNotebook();
+    syncTabs(which === 'archive' ? 'list' : 'notes');
+    playClick();
+  }
+  scheduleTreeDraw();
+}
+function closeDrawers(){
+  document.body.classList.remove('drawer-archive', 'drawer-notes');
+  syncTabs('canvas');
+  scheduleTreeDraw();
+}
+function syncTabs(pane){
   document.body.dataset.pane = pane;
   document.querySelectorAll('.mobile-tabs button').forEach(b => {
     b.classList.toggle('on', b.dataset.pane === pane);
   });
-  if(pane === 'notes') renderNotebook();
-  const vp = document.getElementById('viewport');
-  if(pane === 'canvas' && vp) vp.scrollTop = 0;
+}
+
+/* =========================================================
+   调查树：目标卡为根，三要员为分支
+   ========================================================= */
+let treeRaf = 0;
+function scheduleTreeDraw(){
+  if(treeRaf) cancelAnimationFrame(treeRaf);
+  treeRaf = requestAnimationFrame(() => { treeRaf = 0; drawTree(); });
+}
+function drawTree(){
+  const canvas = document.getElementById('canvas');
+  const svg = document.getElementById('treeLines');
+  if(!canvas || !svg) return;
+  if(window.innerWidth <= 1080){ svg.innerHTML = ''; svg.removeAttribute('width'); svg.removeAttribute('height'); return; }
+
+  const root = document.getElementById('card-0');
+  const persons = [1, 2, 3].map(cid => document.getElementById('card-' + cid)).filter(Boolean);
+  if(!root || !persons.length) return;
+
+  const cr = canvas.getBoundingClientRect();
+  const w = canvas.scrollWidth, h = canvas.scrollHeight;
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+  const rr = root.getBoundingClientRect();
+  const x0 = rr.left - cr.left + rr.width / 2;
+  const y0 = rr.bottom - cr.top;
+
+  const rects = persons.map(p => p.getBoundingClientRect());
+  const tops = rects.map(r => r.top - cr.top);
+  const busY = y0 + Math.max(16, (Math.min(...tops) - y0) * 0.52);
+
+  let out = `<circle cx="${x0}" cy="${y0}" r="3.5" />`;
+  persons.forEach((p, i) => {
+    const x = rects[i].left - cr.left + rects[i].width / 2;
+    const y = tops[i];
+    const done = isCardSolved(i + 1) ? ' class="done"' : '';
+    out += `<path${done} d="M ${x0} ${y0} V ${busY} H ${x} V ${y}" />`;
+    out += `<circle${done} cx="${x}" cy="${y}" r="3.5" />`;
+  });
+  svg.innerHTML = out;
 }
 
 /* 触屏/拖选后的浮动操作条 */
@@ -2867,15 +2988,27 @@ function init(){
 
   renderArchiveList();
   renderNotebook();
+  mountPersonCards();
   [0,1,2,3].forEach(cid => {
     Object.keys(state.slots[cid]).forEach(st => renderSlot(cid, st));
+    renderCardFields(cid);
     renderPhoto(cid);
-    renderPersonFile(cid);
   });
   renderFailCount();
   renderProgress();
+  scheduleTreeDraw();
 
-  /* 移动端：默认落在案情板 */
+  /* 树线随尺寸/卡片高度变化重绘 */
+  window.addEventListener('resize', scheduleTreeDraw);
+  if(window.ResizeObserver){
+    const cv = document.getElementById('canvas');
+    if(cv) new ResizeObserver(scheduleTreeDraw).observe(cv);
+  }
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') closeDrawers();
+  });
+
+  /* 移动端：默认落在调查树 */
   document.body.dataset.pane = 'canvas';
   document.querySelectorAll('.mobile-tabs button').forEach(b => {
     b.classList.toggle('on', b.dataset.pane === 'canvas');
