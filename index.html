@@ -41,25 +41,33 @@
     background:#050505;display:flex;align-items:center;
     padding:0 20px;position:relative;z-index:30;gap:20px;
   }
-  .zoom-group{display:flex;align-items:center;gap:8px}
-  .zoom-btns{
-    display:flex;border:1.5px solid var(--line3);border-radius:3px;
-    overflow:hidden;background:var(--bg2);
+  .top-search{
+    margin-left:auto;display:flex;align-items:center;
+    border:1.5px solid var(--line3);border-radius:3px;background:#0d0d0d;
+    height:34px;max-width:340px;flex:1 1 200px;overflow:hidden;
+    transition:border-color .15s;
   }
-  .zoom-btns button{
-    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-    font-size:17px;font-weight:700;color:var(--fg2);transition:.15s;
+  .top-search:focus-within{border-color:var(--white)}
+  .top-search .ts-icon{
+    padding:0 8px 0 10px;color:var(--fg3);font-size:14px;line-height:1;flex-shrink:0;
   }
-  .zoom-btns button:first-child{border-right:1.5px solid var(--line3)}
-  .zoom-btns button:hover{background:#2a2a2a;color:var(--white)}
-  .zoom-val{font-family:'Space Mono',monospace;font-size:11px;color:var(--fg3);min-width:42px}
+  .top-search input{
+    flex:1;min-width:0;height:100%;border:none;background:transparent;
+    color:var(--fg);font-family:inherit;font-size:12.5px;outline:none;
+  }
+  .top-search input::placeholder{color:var(--fg4)}
+  .top-search button{
+    height:100%;padding:0 13px;border-left:1.5px solid var(--line3);
+    background:var(--bg2);color:var(--fg2);font-size:12px;font-weight:700;
+    transition:.15s;white-space:nowrap;flex-shrink:0;
+  }
+  .top-search button:hover{background:#2a2a2a;color:var(--white)}
 
   .title-banner{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    background:var(--white);color:#000;padding:6px 22px;border-radius:2px;
-    border:2px solid var(--white);box-shadow:4px 4px 0 0 rgba(255,255,255,.15);
-    font-weight:900;letter-spacing:.06em;font-size:14.5px;
-    display:flex;align-items:center;gap:12px;white-space:nowrap;
+    background:var(--white);color:#000;padding:6px 18px;border-radius:2px;
+    border:2px solid var(--white);box-shadow:3px 3px 0 0 rgba(255,255,255,.15);
+    font-weight:900;letter-spacing:.06em;font-size:13.5px;
+    display:flex;align-items:center;gap:10px;white-space:nowrap;flex-shrink:0;
   }
   .title-banner::before,.title-banner::after{
     content:'';width:7px;height:7px;border-radius:50%;background:#000;
@@ -69,7 +77,7 @@
     .title-banner::before,.title-banner::after{display:none}
   }
 
-  .topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .topbar-right{margin-left:14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
   .audio-btn{
     padding:6px 11px;border:1.5px solid var(--line3);border-radius:3px;
     background:var(--bg2);font-family:'Space Mono',monospace;font-size:11px;
@@ -77,12 +85,6 @@
     transition:.15s;
   }
   .audio-btn:hover{background:#222;color:var(--white)}
-  .sys-meta{
-    font-family:'Space Mono',monospace;font-size:10px;color:var(--fg3);
-    text-align:right;line-height:1.5;
-  }
-  .sys-meta b{color:var(--fg2);font-weight:700}
-  @media(max-width:720px){.sys-meta{display:none}}
 
   /* ========== 主体 ========== */
   .workspace{flex:1;display:flex;overflow:hidden;position:relative}
@@ -116,9 +118,13 @@
     font-family:'Space Mono',monospace;font-size:9px;color:#8a6a3a;
     margin-top:4px;letter-spacing:.02em;line-height:1.5;
   }
+  @media(max-width:1080px){
+    .canvas{grid-template-columns:1fr;max-width:620px;padding:20px 16px 50px}
+    .card.target{grid-column:auto;justify-self:stretch;max-width:none}
+  }
   @media(max-width:900px){.archive-list{display:none}}
 
-  /* ---- 中间：画布 ---- */
+  /* ---- 中间：案情板 ---- */
   .viewport{
     flex:1;overflow:auto;position:relative;background-color:#080808;
     background-image:
@@ -127,34 +133,22 @@
     background-size:32px 32px;
   }
   .canvas{
-    position:relative;width:1400px;height:900px;
-    transform-origin:0 0;transition:transform .15s ease-out;
+    width:100%;max-width:1160px;margin:0 auto;
+    padding:28px 26px 70px;
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:18px;align-items:start;
   }
-  .svg-lines{
-    position:absolute;inset:0;width:1400px;height:900px;
-    pointer-events:none;z-index:5;overflow:visible;
-  }
-  .svg-lines line{
-    stroke:#666;stroke-width:1.5;stroke-dasharray:5 5;
-    transition:stroke .4s,stroke-dasharray .4s,filter .4s;
-  }
-  .svg-lines line.active{
-    stroke:var(--white);stroke-dasharray:none;stroke-width:2;
-    filter:drop-shadow(0 0 6px rgba(255,255,255,.5));
-  }
-  .svg-lines circle{fill:#888;transition:fill .4s}
-  .svg-lines circle.active{fill:var(--white)}
 
   /* ---- 卡片 ---- */
   .card{
-    position:absolute;background:var(--card-bg);
-    border:2px solid var(--line2);border-radius:4px;z-index:10;
-    transition:border-color .25s,box-shadow .25s,transform .2s;
+    background:var(--card-bg);
+    border:2px solid var(--line2);border-radius:4px;
+    transition:border-color .25s,box-shadow .25s;
     box-shadow:4px 4px 0 0 rgba(255,255,255,.06);
   }
   .card:hover{border-color:#666;box-shadow:4px 4px 0 0 rgba(255,255,255,.12)}
   .card.target{
-    width:400px;left:500px;top:70px;
+    grid-column:1 / -1;justify-self:center;width:100%;max-width:600px;
     border:2px solid var(--white);
     box-shadow:6px 6px 0 0 rgba(255,255,255,.9);background:#0f0f0f;
   }
@@ -173,10 +167,7 @@
   }
   .card.target .tag{background:#000;color:#fff}
   .card.person .tag{background:#000;color:#888;border:1px solid #444}
-  .card.person{width:340px;top:490px}
-  .card.person.c1{left:60px}
-  .card.person.c2{left:530px}
-  .card.person.c3{left:1000px}
+  .card.person{display:flex;flex-direction:column;min-width:0}
   .card-body{padding:14px}
   .card.target .card-body{padding:16px}
   .target-layout{display:flex;gap:16px}
@@ -420,41 +411,6 @@
     box-shadow:5px 5px 0 0 rgba(255,255,255,.35);
   }
   .archive-btn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 0 rgba(255,255,255,.3)}
-
-  /* ========== 底栏 ========== */
-  .bottombar{
-    height:54px;flex-shrink:0;border-top:2px solid var(--line);
-    background:#050505;display:flex;align-items:center;
-    padding:0 24px;gap:14px;z-index:30;
-  }
-  .circle-btn{
-    position:relative;width:36px;height:36px;border-radius:50%;
-    border:2px solid var(--line3);background:var(--bg2);
-    display:flex;align-items:center;justify-content:center;
-    font-size:15px;transition:.15s;color:var(--fg2);
-  }
-  .circle-btn:hover{border-color:var(--white);color:var(--white);background:#1c1c1c}
-  .circle-btn.primary{background:var(--white);color:#000;border-color:var(--white)}
-  .circle-btn.primary:hover{background:#dcdcdc}
-  .circle-btn .badge{
-    position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;
-    background:var(--white);color:#000;font-family:'Space Mono',monospace;
-    font-size:9px;font-weight:900;border-radius:8px;
-    display:flex;align-items:center;justify-content:center;
-    padding:0 4px;border:1.5px solid #000;
-  }
-  .circle-btn .badge.pop{animation:badgePop .55s ease}
-  @keyframes badgePop{
-    0%{transform:scale(1)}
-    40%{transform:scale(1.55)}
-    70%{transform:scale(.92)}
-    100%{transform:scale(1)}
-  }
-  .bottombar-status{
-    margin-left:auto;font-family:'Space Mono',monospace;
-    font-size:10px;color:var(--fg3);letter-spacing:.08em;
-  }
-  @media(max-width:720px){.bottombar-status{display:none}}
 
   /* ========== 弹窗 ========== */
   .modal{
@@ -991,21 +947,6 @@
   .set-btn.danger{border-color:#7a3a34;color:#d99}
   .set-btn.danger:hover{background:#7a3a34;color:#fff;border-color:#7a3a34}
 
-  .nb-full{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:120;display:none;padding:22px;overflow:auto}
-  .nb-full.on{display:block}
-  .nb-full-panel{
-    max-width:1060px;margin:0 auto;background:#0c0c0c;
-    border:2px solid var(--white);border-radius:4px;padding:18px 20px;
-    box-shadow:8px 8px 0 0 rgba(255,255,255,.18);
-  }
-  .nb-full-head{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;
-  }
-  .nb-full-head h2{font-size:14px;font-weight:900;color:var(--white);letter-spacing:.06em}
-  .nb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
-  .nb-grid .note{margin-bottom:0}
-
   .mobile-tabs{display:none;flex-shrink:0;border-bottom:2px solid var(--line);background:#050505}
   .mobile-tabs button{
     flex:1;padding:11px 4px;font-family:'Space Mono',monospace;font-size:11px;
@@ -1048,7 +989,6 @@
   /* 弹窗层级：报告/设置/提示需高于终局页，二次确认最高 */
   #hintModal,#reportModal,#settingsModal{z-index:260}
   #miniConfirm{z-index:320}
-  .nb-full{z-index:270}
 
   @media(max-width:900px){
     .mobile-tabs{display:flex}
@@ -1058,9 +998,7 @@
     body[data-pane="notes"] .sidebar{display:flex}
     .viewport{display:none}
     body[data-pane="canvas"] .viewport{display:block}
-    .canvas{transform-origin:top left}
     .topbar{padding:0 10px;gap:8px}
-    .sys-meta{display:none}
     .notebook{max-height:none}
   }
   @media(max-width:640px){
@@ -1068,7 +1006,6 @@
     .report-head h2{font-size:15px}
     .report-seal{width:52px;height:52px;font-size:9.5px;right:14px;top:10px}
     .report-body,.report-head,.report-foot{padding-left:16px;padding-right:16px}
-    .nb-full{padding:10px}
   }
 </style>
 </head>
@@ -1076,35 +1013,30 @@
 
 <!-- ========== 顶栏 ========== -->
 <header class="topbar">
-  <div class="zoom-group">
-    <div class="zoom-btns">
-      <button onclick="adjustZoom(0.1)" title="放大">+</button>
-      <button onclick="adjustZoom(-0.1)" title="缩小">−</button>
-    </div>
-    <span class="zoom-val mono" id="zoomVal">100%</span>
+  <div class="title-banner">
+    <span>马江海战殉国舰队调查 · 其一 [老掌柜]</span>
   </div>
 
-  <div class="title-banner">
-    <span>马江海战殉国舰队调查案卷 · 其一 [老掌柜]</span>
+  <div class="top-search">
+    <span class="ts-icon">⌕</span>
+    <input id="topSearchInput" type="text" placeholder="检索全部物证…"
+           onkeydown="if(event.key==='Enter'){event.preventDefault();runTopSearch();}">
+    <button type="button" onclick="runTopSearch()">检索</button>
   </div>
 
   <div class="topbar-right">
-    <button class="audio-btn mono" onclick="openSettings()" title="调查设置">⚙ 设置</button>
-    <button class="audio-btn mono" id="soundBtn" onclick="toggleAudio()">
+    <button class="audio-btn mono" id="soundBtn" onclick="toggleAudio()" title="音效开关">
       <span id="soundIcon">🔇</span>
-      <span id="soundText">AUDIO: OFF</span>
+      <span id="soundText">AUDIO</span>
     </button>
-    <div class="sys-meta mono">
-      <div>FILE: MAWEI-1884</div>
-      <div>STATE: <b id="sysState">UNRESOLVED</b></div>
-    </div>
+    <button class="audio-btn mono" onclick="openSettings()" title="调查设置">⚙</button>
   </div>
 </header>
 
 <!-- 移动端页签 -->
 <nav class="mobile-tabs">
   <button data-pane="list" onclick="setPane('list')">📁 卷宗</button>
-  <button data-pane="canvas" onclick="setPane('canvas')">🕸️ 关系图</button>
+  <button data-pane="canvas" onclick="setPane('canvas')">🗂️ 案情板</button>
   <button data-pane="notes" onclick="setPane('notes')">📝 笔记</button>
 </nav>
 
@@ -1117,10 +1049,9 @@
     <div id="archiveList"></div>
   </aside>
 
-  <!-- 中间：画布 -->
+  <!-- 中间：案情板 -->
   <div class="viewport" id="viewport">
     <div class="canvas" id="canvas">
-      <svg class="svg-lines" id="svgLines" viewBox="0 0 1400 900" preserveAspectRatio="xMinYMin meet"></svg>
 
       <!-- 目标卡 -->
       <div class="card target" id="card-0">
@@ -1212,21 +1143,6 @@
                   </div>
                 </div>
               </div>
-              <div>
-                <div class="field-label"><span>官职 / 职责</span></div>
-                <div class="slot" id="slot-1-role" data-cid="1" data-st="role">
-                  <div class="slot-main" onclick="openPicker(1,'role')">
-                    <span class="slot-icon">＋</span>
-                    <span class="slot-text">[ 未知职务 ]</span>
-                    <span class="slot-badge" style="display:none"></span>
-                  </div>
-                  <div class="slot-actions">
-                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(1,'role')">确认</button>
-                    <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(1,'role')">撤回</button>
-                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(1,'role')">解除</button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1261,21 +1177,6 @@
                     <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(2,'name')">确认</button>
                     <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(2,'name')">撤回</button>
                     <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(2,'name')">解除</button>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="field-label"><span>官职 / 职责</span></div>
-                <div class="slot" id="slot-2-role" data-cid="2" data-st="role">
-                  <div class="slot-main" onclick="openPicker(2,'role')">
-                    <span class="slot-icon">＋</span>
-                    <span class="slot-text">[ 未知职务 ]</span>
-                    <span class="slot-badge" style="display:none"></span>
-                  </div>
-                  <div class="slot-actions">
-                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(2,'role')">确认</button>
-                    <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(2,'role')">撤回</button>
-                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(2,'role')">解除</button>
                   </div>
                 </div>
               </div>
@@ -1316,21 +1217,6 @@
                   </div>
                 </div>
               </div>
-              <div>
-                <div class="field-label"><span>官职 / 职责</span></div>
-                <div class="slot" id="slot-3-role" data-cid="3" data-st="role">
-                  <div class="slot-main" onclick="openPicker(3,'role')">
-                    <span class="slot-icon">＋</span>
-                    <span class="slot-text">[ 未知职务 ]</span>
-                    <span class="slot-badge" style="display:none"></span>
-                  </div>
-                  <div class="slot-actions">
-                    <button class="slot-act confirm" type="button" onclick="event.stopPropagation();openConfirm(3,'role')">确认</button>
-                    <button class="slot-act withdraw" type="button" onclick="event.stopPropagation();withdrawSlot(3,'role')">撤回</button>
-                    <button class="slot-act unlock" type="button" onclick="event.stopPropagation();unlockSlot(3,'role')">解除</button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1351,7 +1237,7 @@
         <h3>调查须知 BRIEFING</h3>
         <span class="tag mono">GUIDE</span>
       </div>
-      <p>拖选案卷文字，右键<b>收藏</b>入笔记本，再归位关系图并<b>引证确认</b>。卡住可查<b>提示</b>，或按 🔍 检索档案索引词解封新卷。</p>
+      <p>拖选案卷文字，<b>收藏</b>入笔记本，再归位到<b>案情板</b>并引证确认。卡住可查<b>提示</b>，或用顶部检索框搜档案索引词解封新卷。</p>
     </div>
 
     <div>
@@ -1390,22 +1276,6 @@
 
   </aside>
 </div>
-
-<!-- ========== 底栏 ========== -->
-<footer class="bottombar">
-  <button class="circle-btn" onclick="openArchive()" title="案卷">
-    📁
-    <span class="badge" id="archiveBadge">·</span>
-  </button>
-  <button class="circle-btn primary" onclick="focusCanvas()" title="关系图 · 重置视图">🕸️</button>
-  <button class="circle-btn" onclick="openGlobalSearch()" title="全局检索">🔍</button>
-  <button class="circle-btn" onclick="toggleNotebookFull()" title="全屏笔记本">📝</button>
-  <button class="circle-btn" onclick="openSettings()" title="设置">⚙️</button>
-  <div class="bottombar-status">
-    SYSTEM: READY // MINJIANG RIVER EXPEDITION 1884
-    <span id="rejectStat" style="display:none;margin-left:14px;color:#d98">驳回 <b id="rejectNum">0</b> 次</span>
-  </div>
-</footer>
 
 <!-- ========== 案卷弹窗 ========== -->
 <div class="modal" id="archiveModal">
@@ -1586,17 +1456,6 @@
   </div>
 </div>
 
-<!-- ========== 全屏笔记本 ========== -->
-<div class="nb-full" id="nbFull">
-  <div class="nb-full-panel">
-    <div class="nb-full-head">
-      <h2>📝 调查笔记本 · 全览</h2>
-      <button class="btn-ghost" type="button" onclick="toggleNotebookFull()">关闭</button>
-    </div>
-    <div class="nb-grid" id="nbFullBody"></div>
-  </div>
-</div>
-
 <!-- ========== 选区操作条（触屏 / 拖选） ========== -->
 <div class="sel-bar" id="selBar">
   <button type="button" onclick="selAct('collect')">📌 收藏</button>
@@ -1608,7 +1467,6 @@
    状态
    ========================================================= */
 const state = {
-  zoom: 1.0,
   audioOn: false,
   audioCtx: null,
   notes: [],           // { id, text, source, time, used }
@@ -1616,9 +1474,9 @@ const state = {
   unlockedDocs: new Set(),   // 已解封案卷索引
   slots: {
     0: { role: {value:null,status:'empty',evidence:[]}, wound: {value:null,status:'empty',evidence:[]} },
-    1: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} },
-    2: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} },
-    3: { name: {value:null,status:'empty',evidence:[]}, role: {value:null,status:'empty',evidence:[]} }
+    1: { name: {value:null,status:'empty',evidence:[]} },
+    2: { name: {value:null,status:'empty',evidence:[]} },
+    3: { name: {value:null,status:'empty',evidence:[]} }
   },
   activeCard: null,
   activeSlot: null,
@@ -1835,16 +1693,17 @@ function playStamp(){
 }
 
 /* =========================================================
-   缩放
+   顶栏全局检索
    ========================================================= */
-function adjustZoom(delta){
-  playClick();
-  state.zoom = Math.min(Math.max(0.6, state.zoom + delta), 1.6);
-  applyZoom();
-}
-function applyZoom(){
-  document.getElementById('canvas').style.transform = `scale(${state.zoom})`;
-  document.getElementById('zoomVal').textContent = Math.round(state.zoom * 100) + '%';
+function runTopSearch(){
+  const inp = document.getElementById('topSearchInput');
+  const q = inp ? inp.value.trim() : '';
+  if(!q){
+    toast('请输入要检索的字词。');
+    if(inp) inp.focus();
+    return;
+  }
+  openGlobalSearch(q);
 }
 
 /* =========================================================
@@ -1938,28 +1797,8 @@ function loadSave(){
 }
 
 /* =========================================================
-   SVG 连线
+   卡片完成态（连线已移除，案情板改为自适应网格）
    ========================================================= */
-function drawLines(){
-  const svg = document.getElementById('svgLines');
-  const target = document.getElementById('card-0');
-  const targetBottom = { x: 700, y: 70 + target.offsetHeight };
-  const personTops = [
-    { x: 60 + 170,  y: 490 },
-    { x: 530 + 170, y: 490 },
-    { x: 1000 + 170,y: 490 }
-  ];
-  let html = '';
-  personTops.forEach((pt, i) => {
-    const cardId = i + 1;
-    const solved = isCardSolved(cardId);
-    const cls = solved ? 'active' : '';
-    html += `<line x1="${targetBottom.x}" y1="${targetBottom.y}" x2="${pt.x}" y2="${pt.y}" class="${cls}"/>`;
-    html += `<circle cx="${targetBottom.x}" cy="${targetBottom.y}" r="4" class="${cls}"/>`;
-    html += `<circle cx="${pt.x}" cy="${pt.y}" r="4" class="${cls}"/>`;
-  });
-  svg.innerHTML = html;
-}
 
 /* =========================================================
    左侧卷宗列表
@@ -2261,10 +2100,6 @@ function renderNotebook(){
 
   nb.innerHTML = html;
 
-  /* 全屏笔记本同步（若已打开） */
-  const full = document.getElementById('nbFullBody');
-  if(full) full.innerHTML = html;
-
   /* 笔记本内点击 = 归位提示（工具按钮除外） */
   nb.querySelectorAll('.note:not(.used)').forEach(el => {
     el.onclick = (ev) => {
@@ -2353,9 +2188,9 @@ function closePicker(){
    ========================================================= */
 const SLOT_PLACEHOLDER = {
   0: { role: '[ 未知实体 ]', wound: '[ 未知受创特征 ]' },
-  1: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' },
-  2: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' },
-  3: { name: '[ 未知姓名 ]', role: '[ 未知职务 ]' }
+  1: { name: '[ 未知姓名 ]' },
+  2: { name: '[ 未知姓名 ]' },
+  3: { name: '[ 未知姓名 ]' }
 };
 
 /* 卡面展示值：笔记存原文，若能命中答案则展示标准关键词，否则展示原文 */
@@ -2372,7 +2207,8 @@ function slotDisplayValue(cid, st){
 }
 
 function renderSlot(cid, st){
-  const slot = state.slots[cid][st];
+  const slot = state.slots[cid] && state.slots[cid][st];
+  if(!slot) return;
   const el = document.getElementById(`slot-${cid}-${st}`);
   if(!el) return;
   el.classList.remove('filled','tentative','confirmed');
@@ -2604,7 +2440,6 @@ function checkCardComplete(cid){
   const card = document.getElementById(`card-${cid}`);
   if(card) card.classList.toggle('complete', isCardSolved(cid));
   renderPhoto(cid);
-  drawLines();
 }
 
 /* 阶段9 · 肖像显影 */
@@ -2670,9 +2505,9 @@ function renderShipGrid(){
    ========================================================= */
 const SLOT_LABEL = {
   '0.role': '老掌柜 · 身份', '0.wound': '老掌柜 · 创痕',
-  '1.name': '要员 A · 真实姓名', '1.role': '要员 A · 官职',
-  '2.name': '要员 B · 真实姓名', '2.role': '要员 B · 官职',
-  '3.name': '要员 C · 真实姓名', '3.role': '要员 C · 官职'
+  '1.name': '要员 A · 真实姓名',
+  '2.name': '要员 B · 真实姓名',
+  '3.name': '要员 C · 真实姓名'
 };
 const QUESTIONS = {
   '0.role': '代号「老掌柜」者，究竟是何实体？',
@@ -2896,29 +2731,14 @@ function resetInvestigation(){
   });
 }
 
-function toggleNotebookFull(){
-  const el = document.getElementById('nbFull');
-  const on = el.classList.toggle('on');
-  if(on){
-    renderNotebook();
-    playClick();
-  }
-}
-function focusCanvas(){
-  playClick();
-  state.zoom = window.innerWidth < 900 ? (window.innerWidth < 520 ? 0.55 : 0.7) : 1;
-  applyZoom();
-  setPane('canvas');
-  const vp = document.getElementById('viewport');
-  if(vp) vp.scrollTo({ left: window.innerWidth < 900 ? 240 : 180, top: 40, behavior: 'smooth' });
-}
 function setPane(pane){
   document.body.dataset.pane = pane;
   document.querySelectorAll('.mobile-tabs button').forEach(b => {
     b.classList.toggle('on', b.dataset.pane === pane);
   });
-  if(pane === 'canvas') setTimeout(drawLines, 60);
   if(pane === 'notes') renderNotebook();
+  const vp = document.getElementById('viewport');
+  if(pane === 'canvas' && vp) vp.scrollTop = 0;
 }
 
 /* 触屏/拖选后的浮动操作条 */
@@ -2974,21 +2794,12 @@ function init(){
   renderFailCount();
   renderProgress();
 
-  /* 移动端：默认落在关系图，并给一个可读的初始缩放 */
+  /* 移动端：默认落在案情板 */
   document.body.dataset.pane = 'canvas';
-  if(window.innerWidth < 900){
-    state.zoom = window.innerWidth < 520 ? 0.55 : 0.7;
-    document.querySelectorAll('.mobile-tabs button').forEach(b => {
-      b.classList.toggle('on', b.dataset.pane === 'canvas');
-    });
-  }
-  applyZoom();
+  document.querySelectorAll('.mobile-tabs button').forEach(b => {
+    b.classList.toggle('on', b.dataset.pane === 'canvas');
+  });
   updateSysState();
-
-  setTimeout(drawLines, 100);
-  setTimeout(drawLines, 500);
-  window.addEventListener('resize', () => { drawLines(); });
-  window.addEventListener('load', drawLines);
 
   /* 文本选择 + 右键菜单 */
   document.addEventListener('contextmenu', (e) => {
